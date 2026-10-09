@@ -19,6 +19,7 @@ Usage principal : iPhone (installée sur l'écran d'accueil), plus un PC. Toute 
 - Navigation : `T` (liste des vues) et `G` (4 onglets de la barre flottante : Accueil, Entraînement, Nutrition, Profil, avec sous-onglets).
 - Schéma de `S` : `program[]` (séances avec `exos[]` : name, sets, min, max, charge, step, tip, verdict, why), `history[]`, `draft` (séance en cours), `profile`, `weights[]` ({t, w}), `food{ 'AAAA-MM-JJ': [ {m, n, k, p, g, l, q} ] }` (macros pour 100 g, `q` = coefficient), `favs[]`, `adj` (ajustement kcal du coach), `adjT` (date du dernier ajustement), `cost`, `theme`. Les entrées de `history[].exos[]` portent l'`id` de l'exercice (lien avec le programme).
 - Depuis le lot 2 : chaque exercice a `rest` (repos en secondes, 0 = pas de minuteur) et éventuellement `cs[]` (charges par série ; `charge` vaut alors la plus lourde). Dans `draft.x[id]` : `ok[]` (séries cochées) et `cs[]`. `S.rest` = minuteur en cours ({end, tot}), `S.sound` = son de fin de repos. Programme est dans l'onglet Entraînement.
+- Depuis le lot 3 : sous-onglet Progrès (`vStats`, 1RM estimé `orm()`, records calculés à la volée par `marks()`, rien de stocké), bilan hebdo `bilanCard()` (dans Corps, et sur l'Accueil le jour d'une pesée), adhérence dans `coach()` via `eaten(n)` (moyenne des jours saisis, aujourd'hui exclu ; écart toléré 5 %, vérifié à partir de 5 jours saisis sur 14).
 - Les migrations sont dans `migrate()` (appelée au chargement et après un import). Les suppressions passent par `undoable()` (bandeau « Annuler » 6 secondes).
 - Test en local : `.claude/serve.ps1` sert l'appli sur http://localhost:8123 (nécessaire pour le service worker).
 - **Ne jamais casser les données existantes** : toute évolution du schéma passe par une migration au chargement (valeurs par défaut, conversion), jamais par une réinitialisation.
@@ -60,7 +61,7 @@ Puis : hébergement (Cloudflare Pages ou GitHub Pages) et 1 à 2 semaines d'usag
 11. Charge par série en option (pyramides, échauffement).
 15. Case à cocher pour valider chaque série, qui lance un minuteur de repos (vibration à la fin).
 
-### Lot 3 : coach
+### Lot 3 : coach (fait le 09/10/2026, testé sur PC avec des données fictives, à valider en usage réel)
 23. Bilan hebdo automatique le jour de la pesée (séances faites, moyenne kcal vs cible, tendance du poids, exercices en hausse ou en baisse, consigne pour la semaine).
 24. Avant d'ajuster les calories, le coach vérifie l'adhérence : si la moyenne mangée s'écarte de la cible, il le dit au lieu de changer la cible.
 16. Courbes de progression par exercice, 1RM estimé (Epley) et records personnels (voyant « RECORD »).
