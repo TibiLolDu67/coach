@@ -18,6 +18,7 @@ Usage principal : iPhone (installée sur l'écran d'accueil), plus un PC. Toute 
 - Saisies : un seul écouteur `change`, le champ est dans `data-k`.
 - Navigation : `T` (liste des vues) et `G` (4 onglets de la barre flottante : Accueil, Entraînement, Nutrition, Profil, avec sous-onglets).
 - Schéma de `S` : `program[]` (séances avec `exos[]` : name, sets, min, max, charge, step, tip, verdict, why), `history[]`, `draft` (séance en cours), `profile`, `weights[]` ({t, w}), `food{ 'AAAA-MM-JJ': [ {m, n, k, p, g, l, q} ] }` (macros pour 100 g, `q` = coefficient), `favs[]`, `adj` (ajustement kcal du coach), `adjT` (date du dernier ajustement), `cost`, `theme`. Les entrées de `history[].exos[]` portent l'`id` de l'exercice (lien avec le programme).
+- Depuis le lot 2 : chaque exercice a `rest` (repos en secondes, 0 = pas de minuteur) et éventuellement `cs[]` (charges par série ; `charge` vaut alors la plus lourde). Dans `draft.x[id]` : `ok[]` (séries cochées) et `cs[]`. `S.rest` = minuteur en cours ({end, tot}), `S.sound` = son de fin de repos. Programme est dans l'onglet Entraînement.
 - Les migrations sont dans `migrate()` (appelée au chargement et après un import). Les suppressions passent par `undoable()` (bandeau « Annuler » 6 secondes).
 - Test en local : `.claude/serve.ps1` sert l'appli sur http://localhost:8123 (nécessaire pour le service worker).
 - **Ne jamais casser les données existantes** : toute évolution du schéma passe par une migration au chargement (valeurs par défaut, conversion), jamais par une réinitialisation.
@@ -54,7 +55,7 @@ Usage principal : iPhone (installée sur l'écran d'accueil), plus un PC. Toute 
 
 Puis : hébergement (Cloudflare Pages ou GitHub Pages) et 1 à 2 semaines d'usage réel avant le lot 2.
 
-### Lot 2 : séance
+### Lot 2 : séance (fait le 09/10/2026, testé sur PC, à valider sur iPhone)
 10. Déplacer Programme dans Entraînement (sous-onglets Séance, Programme, Historique).
 11. Charge par série en option (pyramides, échauffement).
 15. Case à cocher pour valider chaque série, qui lance un minuteur de repos (vibration à la fin).
