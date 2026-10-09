@@ -42,7 +42,8 @@ nav.tabbar button.on{background:rgba(255,255,255,.16);color:#fff}
 .g3{display:grid;grid-template-columns:1fr 1.2fr 1.2fr;gap:6px;margin:8px 0}.g3 input,.g3 select{padding:8px 4px;font-size:14px}
 hr{border:0;border-top:1px solid var(--ln);margin:12px 0}
 small{color:var(--mu)}
-</style></head><body><div id="app"></div>
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));width:min(520px,calc(100% - 28px));box-sizing:border-box;background:var(--navbg);color:#fff;border:1px solid var(--ln);border-radius:18px;padding:8px 8px 8px 16px;display:flex;align-items:center;gap:10px;box-shadow:0 10px 28px rgba(0,0,0,.3);z-index:6}.toast span{flex:1}.toast button{background:rgba(255,255,255,.16);color:#fff}
+</style></head><body><div id="app"></div><div id="undo" aria-live="polite"></div>
 <script>
 const K='pcm1',$=s=>document.querySelector(s),uid=()=>Math.random().toString(36).slice(2,8);
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -53,11 +54,19 @@ let S=null;try{S=JSON.parse(localStorage.getItem(K))}catch(e){}
 if(!S||!Array.isArray(S.program))S={program:[
  {id:uid(),name:'Séance A',exos:[ex('Développé couché',3,8,12,40,2.5),ex('Rowing barre',3,8,12,40,2.5)]},
  {id:uid(),name:'Séance B',exos:[ex('Squat',3,6,10,60,2.5),ex('Soulevé de terre roumain',3,8,12,60,2.5)]}],history:[],tab:'seance',draft:null};
-if(!S.history)S.history=[];
-S.profile=S.profile||{sex:'m',age:'',h:'',act:1.2,ses:3,neck:'',waist:'',hip:'',goal:'cut',rate:0.3};S.weights=S.weights||[];S.food=S.food||{};S.favs=S.favs||[];document.documentElement.dataset.theme=S.theme||'light';S.tab='home';S.cost=S.cost||{lines:[{id:uid(),n:'Abonnement salle',cat:'Salle',amt:35,per:'mois'}],trip:0,dur:0,oth:0,weeks:48};
 const save=()=>{try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}};
+function migrate(){
+ if(!Array.isArray(S.history))S.history=[];
+ S.profile=S.profile||{sex:'m',age:'',h:'',act:1.2,ses:3,neck:'',waist:'',hip:'',goal:'cut',rate:0.3};S.weights=S.weights||[];S.food=S.food||{};S.favs=S.favs||[];S.cost=S.cost||{lines:[{id:uid(),n:'Abonnement salle',cat:'Salle',amt:35,per:'mois'}],trip:0,dur:0,oth:0,weeks:48};
+ S.program.forEach(d=>{d.id=d.id||uid();d.exos=d.exos||[];d.exos.forEach(e=>{e.id=e.id||uid()})});
+ const all=S.program.flatMap(d=>d.exos);
+ S.history.forEach(h=>h.exos.forEach(o=>{if(!o.id){const d=S.program.find(x=>x.name===h.day),e=(d&&d.exos.find(x=>x.name===o.n))||all.find(x=>x.name===o.n);if(e)o.id=e.id}}));
+ document.documentElement.dataset.theme=S.theme||'light'}
+migrate();S.tab='home';save();
 const lamp=e=>e.verdict?`<span class="lamp ${V[e.verdict][1]}">${V[e.verdict][0]}</span> <small>${esc(e.why)}</small>`:'<span class="lamp">NOUVEAU</span>';
-const prev=n=>{for(let i=S.history.length-1;i>=0;i--){const x=S.history[i].exos.find(o=>o.n===n);if(x)return x}return null};
+const prev=e=>{for(let i=S.history.length-1;i>=0;i--){const x=S.history[i].exos.find(o=>o.id?o.id===e.id:o.n===e.name);if(x)return x}return null};
+let U=null;
+function undoable(msg,fn){if(U)clearTimeout(U.t);U={fn,t:setTimeout(()=>{U=null;$('#undo').innerHTML=''},6000)};$('#undo').innerHTML=`<div class="toast"><span>${esc(msg)}</span><button data-a="undo">Annuler</button></div>`}
 
 function vSeance(){
  if(!S.draft){
@@ -71,7 +80,7 @@ function vSeance(){
  let h=`<div class="card"><b>${esc(d.name)}</b> <small>en cours</small></div>`;
  d.exos.forEach(e=>{
   let D=S.draft.x[e.id];
-  if(!D){const p=prev(e.name);D=S.draft.x[e.id]={c:e.charge,r:(e.verdict=='keep'&&p)?p.r.slice():[],pain:false,feel:0}}
+  if(!D){const p=prev(e);D=S.draft.x[e.id]={c:e.charge,r:(e.verdict=='keep'&&p)?p.r.slice():[],pain:false,feel:0}}
   while(D.r.length<e.sets)D.r.push(e.min);D.r.length=e.sets;
   h+=`<div class="card"><b>${esc(e.name)}</b> <small>${e.sets}×${e.min}-${e.max}</small><div>${lamp(e)}</div>`+
   (e.tip?`<details><summary>Comment faire</summary>${esc(e.tip)}</details>`:'')+
@@ -94,10 +103,23 @@ function vHist(){
   h.exos.map(e=>`<div>${esc(e.n)} : <b>${e.c} kg</b> × ${e.r.join('/')} <span class="lamp ${V[e.v][1]}">${V[e.v][0]}</span>${e.pain?' ⚠':''}</div>`).join('')+
   (h.note?`<div><small>${esc(h.note)}</small></div>`:'')+`<p><button class="soft" data-a="delh" data-i="${i}">Supprimer</button></p></div>`).join('');
 }
+let DM='';
+const backupFile=()=>new File([JSON.stringify({program:S.program,history:S.history,profile:S.profile,weights:S.weights,food:S.food,favs:S.favs,adj:S.adj||0,adjT:S.adjT||0,cost:S.cost,theme:S.theme||'light'})],'coach-sauvegarde-'+dk()+'.json',{type:'application/json'});
+const canShareFile=()=>{try{return !!navigator.canShare&&navigator.canShare({files:[backupFile()]})}catch(e){return false}};
+function importData(txt){
+ let o;try{o=JSON.parse(txt);if(!Array.isArray(o.program)||!Array.isArray(o.history))throw 0}catch(e){return false}
+ const snap=JSON.stringify(S);
+ S.program=o.program;S.history=o.history;S.profile=o.profile||S.profile;S.weights=o.weights||[];S.food=o.food||{};S.favs=o.favs||[];S.adj=o.adj||0;S.adjT=o.adjT||0;S.cost=o.cost||S.cost;if(o.theme)S.theme=o.theme;S.draft=null;migrate();
+ undoable('Sauvegarde importée',()=>{S=JSON.parse(snap);migrate();DM='Import annulé : tes données d\'avant sont revenues.'});return true}
 function vData(){
- return `<div class="card"><b>Sauvegarde</b><p><small>Les données restent dans ce navigateur. Exporte-les régulièrement : copie le texte et garde-le dans une note.</small></p><textarea id="io" rows="8" placeholder="Texte de sauvegarde"></textarea><p class="row"><button data-a="export">Exporter</button><button class="soft" data-a="import">Importer (remplace tout)</button></p><small id="msg"></small></div>`;
+ const inst=navigator.standalone||matchMedia('(display-mode: standalone)').matches,sh=canShareFile();
+ return `<div class="card"><b>Sauvegarde</b><p><small>Tes données restent sur cet appareil. Enregistre régulièrement un fichier de sauvegarde et garde-le ailleurs (Fichiers, iCloud, mail).</small></p>`+
+ (sh?`<p><button class="full" data-a="share">Partager la sauvegarde</button></p><small>Sur iPhone : Partager, puis « Enregistrer dans Fichiers ».</small>`:'')+
+ `<p><button class="full${sh?' soft':''}" data-a="export">Télécharger le fichier .json</button></p><hr><b>Restaurer</b><p><small>Importer un fichier remplace toutes les données actuelles.</small></p><input type="file" id="imf" data-k="imf" hidden><p><button class="full soft" data-a="pick">Importer un fichier</button></p>`+
+ `<details><summary>Coller un texte de sauvegarde</summary><textarea id="io" rows="5" placeholder="Texte de sauvegarde"></textarea><p><button class="soft" data-a="import">Importer ce texte</button></p></details><small id="msg">${esc(DM)}</small></div>`+
+ `<div class="card"><b>Sur iPhone</b> <span class="lamp ${inst?'g':'y'}">${inst?'ÉCRAN D\'ACCUEIL':'NAVIGATEUR'}</span><p><small>Ouvre toujours Coach depuis son icône sur l'écran d'accueil. L'icône et Safari ont chacun leur propre stockage : ce que tu saisis dans l'un n'apparaît pas dans l'autre. Et Safari peut effacer les données d'un site resté 7 jours sans être ouvert.</small></p></div>`;
 }
-const dk=()=>new Date().toLocaleDateString('sv');let ND=dk();const fnd=d=>new Date(d+'T12:00').toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+const dk=()=>new Date().toLocaleDateString('sv');let ND=dk(),TD=ND,AM='';const fnd=d=>new Date(d+'T12:00').toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
 const lastW=()=>S.weights.length?S.weights[S.weights.length-1].w:0;
 const smooth=()=>S.weights.map(p=>{const a=S.weights.filter(q=>q.t<=p.t&&q.t>p.t-14*864e5);return a.reduce((s,q)=>s+q.w,0)/a.length});
 function trend(){const w=S.weights,n=w.length-1;if(n<2||(w[n].t-w[0].t)/864e5<14)return null;const sm=smooth();let k=0;for(let i=0;i<=n;i++)if(w[i].t>=w[n].t-21*864e5){k=i;break}const d=(w[n].t-w[k].t)/864e5;return d<14?null:(sm[n]-sm[k])/d*7}
@@ -106,13 +128,15 @@ function plan(){const p=S.profile,w=lastW(),h=+p.h,a=+p.age;if(!w||!h||!a)return
  const k=Math.max(tdee+r*7700/7+(S.adj||0),bmr),P=2*w,L=0.9*w;
  return{bmr,tdee,r,k:Math.round(k),P:Math.round(P),L:Math.round(L),G:Math.round(Math.max(0,(k-4*P-9*L)/4))}}
 function bf(){const p=S.profile,h=+p.h,n=+p.neck,wa=+p.waist,hi=+p.hip;if(!h||!n||!wa)return null;let v;
- if(p.sex=='m'){if(wa<=n)return null;v=86.01*Math.log10(wa-n)-70.041*Math.log10(h)+36.76}else{if(!hi||wa+hi<=n)return null;v=163.205*Math.log10(wa+hi-n)-97.684*Math.log10(h)-78.387}
+ if(p.sex=='m'){if(wa<=n)return null;v=495/(1.0324-0.19077*Math.log10(wa-n)+0.15456*Math.log10(h))-450}else{if(!hi||wa+hi<=n)return null;v=495/(1.29579-0.35004*Math.log10(wa+hi-n)+0.22100*Math.log10(h))-450}
  return Math.round(v*10)/10}
 function coach(){const pl=plan();if(!pl)return{m:'Renseigne ton profil et ton poids dans Corps pour obtenir ton plan.'};
  const t=trend();if(t===null)return{m:`Cible du jour : ${pl.k} kcal. L'analyse de tendance démarre après 3 pesées (environ 2 semaines).`};
  const g=t-pl.r,f=x=>x.toFixed(2),base=`Tendance de ${f(t)} kg/sem pour un objectif de ${f(pl.r)}.`;
  if(Math.abs(g)<=0.2)return{m:base+' On ne change rien.'};
- const d=g>0?-150:150;return{m:base+` Je propose ${d>0?'+':''}${d} kcal par jour.`,d}}
+ const d=g>0?-150:150,nx=(S.adjT||0)+14*864e5;
+ if(Date.now()<nx)return{m:base+` Dernier ajustement le ${fd(S.adjT)} : j'attends le ${fd(nx)} avant d'en proposer un autre.`};
+ return{m:base+` Je propose ${d>0?'+':''}${d} kcal par jour.`,d}}
 function planHtml(){const pl=plan(),b=bf();
  return pl?`<b>Plan</b><br>BMR ${Math.round(pl.bmr)} kcal, TDEE ${Math.round(pl.tdee)} kcal<br>Cible : <b>${pl.k} kcal</b>, protéines ${pl.P} g, glucides ${pl.G} g, lipides ${pl.L} g`+(S.adj?` <small>(ajustement coach ${S.adj>0?'+':''}${S.adj})</small>`:'')+(b?`<br>Masse grasse estimée : ${Math.max(0,b-3)} à ${b+3} % <small>(méthode Navy, approximative)</small>`:'<br><small>Ajoute cou et taille pour estimer la masse grasse.</small>'):'<b>Plan</b><br><small>Renseigne âge, taille et un premier poids pour calculer ton plan.</small>'}
 function chart(){const w=S.weights.slice(-60);if(w.length<2)return '<small>Le graphique apparaît dès 2 pesées.</small>';
@@ -131,7 +155,7 @@ const MEALS=['Petit-déjeuner','Déjeuner','Collation','Dîner','Autre'];let FM=
 const prevDay=d=>new Date(new Date(d+'T12:00').getTime()-864e5).toLocaleDateString('sv');
 function vNutri(){const pl=plan(),f=S.food[ND]||[],q=x=>x.q||1,s=k=>f.reduce((a,x)=>a+x[k]*q(x),0),inp=(id,ph)=>`<input id="${id}" type="number" step="any" inputmode="decimal" placeholder="${ph}">`,h=new Date().getHours(),fm=FM||(h<11?'Petit-déjeuner':h<15?'Déjeuner':h<18?'Collation':'Dîner'),op=(v,l,c)=>`<option value="${v}" ${c==v?'selected':''}>${l}</option>`,cd=CD||prevDay(ND),bt='class="soft" style="flex:1;padding:8px 4px;font-size:13px"',src=(S.food[cd]||[]).map((x,i)=>({x,i})).filter(o=>CM=='all'||(o.x.m||'Autre')==CM);
  return `<div class="card"><label><small>Jour de nutrition</small><input type="date" data-k="nd" value="${ND}"></label></div><div class="card"><b>${ND==dk()?"Aujourd'hui":fnd(ND)}</b>${bar('Calories',s('k'),pl&&pl.k)}${bar('Protéines g',s('p'),pl&&pl.P)}${bar('Glucides g',s('g'),pl&&pl.G)}${bar('Lipides g',s('l'),pl&&pl.L)}${pl?'':'<small>Renseigne ton profil dans Corps pour voir tes cibles.</small>'}</div>`+
- `<div class="card"><b>Ajouter</b><select id="fm" data-k="fm" style="margin:8px 0">${MEALS.map(m=>op(m,m,fm)).join('')}</select><input id="fn" placeholder="Aliment"><small>Macros pour 100 g (ou 1 portion), puis le coefficient : 2 pour 200 g.</small><div class="g2" style="margin-top:8px">${inp('fk','kcal /100 g')}${inp('fp','Prot. /100 g')}${inp('fg','Gluc. /100 g')}${inp('fl','Lip. /100 g')}</div><label style="display:block;margin-top:8px"><small>Coefficient</small><input id="fq" type="number" step="any" inputmode="decimal" value="1"></label><p><button class="full" data-a="addf">+ Ajouter</button></p>`+
+ `<div class="card"><b>Ajouter</b><select id="fm" data-k="fm" style="margin:8px 0">${MEALS.map(m=>op(m,m,fm)).join('')}</select><input id="fn" placeholder="Aliment"><small>Macros pour 100 g (ou 1 portion), puis le coefficient : 2 pour 200 g.</small><div class="g2" style="margin-top:8px">${inp('fk','kcal /100 g')}${inp('fp','Prot. /100 g')}${inp('fg','Gluc. /100 g')}${inp('fl','Lip. /100 g')}</div><label style="display:block;margin-top:8px"><small>Coefficient</small><input id="fq" type="number" step="any" inputmode="decimal" value="1"></label><p><button class="full" data-a="addf">+ Ajouter</button></p>${AM?`<p><small>${esc(AM)}</small></p>`:''}`+
  (S.favs.length?'<small>Favoris : un tap les ajoute au repas et au coefficient choisis</small>'+S.favs.map((x,i)=>`<div class="row" style="margin-top:6px"><button class="full soft" data-a="favadd" data-i="${i}">${esc(x.n)} (${Math.round(x.k)} kcal /100 g)</button><button class="danger" data-a="delfav" data-i="${i}" aria-label="Retirer le favori">✕</button></div>`).join(''):'')+`</div>`+
  `<div class="card"><b>Copier depuis un autre jour</b><div class="g2" style="margin-top:8px"><input type="date" data-k="cd" value="${cd}"><select data-k="cm">${op('all','Tous les repas',CM)}${MEALS.map(m=>op(m,m,CM)).join('')}</select></div><p><button class="full" data-a="copy">Tout copier ici</button></p>`+
  (cd==ND?'':(src.length?'<small>Ou un seul aliment :</small>'+src.map(({x,i})=>`<div class="row" style="margin-top:6px"><span style="flex:1">${esc(x.n)} <small>×${q(x)}, ${Math.round(x.k*q(x))} kcal</small></span><button class="soft" style="min-height:36px;padding:6px 14px" data-a="copy1" data-dt="${cd}" data-i="${i}">Copier</button></div>`).join(''):'<small>Aucun aliment à cette date.</small>'))+`<div><small>${esc(NM)}</small></div></div>`+
@@ -174,6 +198,7 @@ const T=[['home','Accueil',vHome],['seance','Séance',vSeance],['prog','Programm
 const G=[['home','Accueil',['home']],['train','Entraînement',['seance','hist']],['nutri','Nutrition',['nutri','nhist']],['profil','Profil',['prog','corps','cost','data','opt']]];
 const IC={home:'<path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',train:'<path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/>',nutri:'<path d="M12 7c-2-2-6-1-6 4 0 5 3 9 6 9s6-4 6-9c0-5-4-6-6-4z"/><path d="M12 7c0-2 1-3 3-4"/>',profil:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>'};
 function render(){
+ const now=dk();if(now!=TD){if(ND==TD)ND=now;TD=now}
  const t=T.find(x=>x[0]==S.tab)||T[0],g=G.find(x=>x[2].includes(t[0]));S.last=S.last||{};S.last[g[0]]=t[0];
  const sub=g[2].length>1?'<nav class="sub">'+g[2].map(id=>`<button data-a="tab" data-t="${id}" class="${id==t[0]?'on':''}">${T.find(x=>x[0]==id)[1]}</button>`).join('')+'</nav>':'';
  $('#app').innerHTML=(t[0]=='home'?'':'<h1>Coach</h1>')+sub+t[2]()+'<nav class="tabbar">'+G.map(x=>`<button data-a="tab" data-t="${S.last[x[0]]||x[2][0]}" class="${x==g?'on':''}"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[x[0]]}</svg>${x[1]}</button>`).join('')+'</nav>';
@@ -182,12 +207,12 @@ function finish(){
  const d=S.program.find(x=>x.id==S.draft.day),en={t:Date.now(),day:d.name,note:S.draft.note||'',exos:[]};
  d.exos.forEach(e=>{
   const D=S.draft.x[e.id];if(!D)return;
-  const p=prev(e.name);let v='keep',w='dans la fourchette',c=D.c;
+  const p=prev(e);let v='keep',w='dans la fourchette',c=D.c;
   if(D.pain){v='down';w='douleur signalée';c=D.c-e.step}
-  else if(D.r.every(x=>x>=e.max)){v='up';w='toutes les séries au max';c=D.c+e.step}
+  else if(D.r.every(x=>x>=e.max)){if(D.feel&&D.feel<=2)w='séries au max mais sensation difficile, on consolide';else{v='up';w='toutes les séries au max';c=D.c+e.step}}
   else if(D.r.some(x=>x<e.min)){if(p&&p.r.some(x=>x<e.min)){v='down';w='sous la fourchette 2 séances de suite';c=D.c-e.step}else w='sous la fourchette, on retente'}
   c=Math.max(0,Math.round(c*100)/100);
-  en.exos.push({n:e.name,c:D.c,r:D.r.slice(),pain:D.pain,feel:D.feel,v});
+  en.exos.push({id:e.id,n:e.name,c:D.c,r:D.r.slice(),pain:D.pain,feel:D.feel,v});
   e.charge=c;e.verdict=v;e.why=w+', prochaine charge '+c+' kg';
  });
  S.history.push(en);S.draft=null;S.tab='hist';
@@ -195,8 +220,12 @@ function finish(){
 document.addEventListener('click',ev=>{
  const b=ev.target.closest('[data-a]');if(!b)return;
  const a=b.dataset.a,x=b.dataset.x,i=+b.dataset.i,d=+b.dataset.d,j=+b.dataset.e,D=S.draft&&S.draft.x[x];
- if(a=='export'){const t=$('#io');t.value=JSON.stringify({program:S.program,history:S.history,profile:S.profile,weights:S.weights,food:S.food,favs:S.favs,adj:S.adj||0,cost:S.cost});t.select();try{document.execCommand('copy')}catch(e){}$('#msg').textContent='Texte prêt : copie-le et garde-le.';return}
- if(a=='import'){try{const o=JSON.parse($('#io').value);if(!Array.isArray(o.program)||!Array.isArray(o.history))throw 0;S.program=o.program;S.history=o.history;S.profile=o.profile||S.profile;S.weights=o.weights||[];S.food=o.food||{};S.favs=o.favs||[];S.adj=o.adj||0;S.cost=o.cost||S.cost;S.draft=null;S.tab='seance'}catch(e){$('#msg').textContent='Texte invalide : colle une sauvegarde exportée.';return}}
+ AM='';
+ if(a=='pick'){$('#imf').click();return}
+ if(a=='share'){try{navigator.share({files:[backupFile()],title:'Sauvegarde Coach'}).catch(()=>{})}catch(e){}return}
+ if(a=='export'){const f=backupFile(),u=URL.createObjectURL(f),l=document.createElement('a');l.href=u;l.download=f.name;document.body.appendChild(l);l.click();l.remove();setTimeout(()=>URL.revokeObjectURL(u),1000);DM='Fichier '+f.name+' téléchargé. Garde-le en lieu sûr.'}
+ else if(a=='import')DM=importData($('#io').value)?'Sauvegarde importée.':'Texte invalide : colle une sauvegarde exportée.';
+ else if(a=='undo'){if(U){clearTimeout(U.t);U.fn();U=null;$('#undo').innerHTML=''}}
  else if(a=='tab')S.tab=b.dataset.t;
  else if(a=='start'){S.draft={day:S.program[d].id,x:{},note:''};S.tab='seance'}
  else if(a=='cancel')S.draft=null;
@@ -205,13 +234,13 @@ document.addEventListener('click',ev=>{
  else if(a=='dec')D.r[i]=Math.max(0,D.r[i]-1);
  else if(a=='feel')D.feel=i;
  else if(a=='addday')S.program.push({id:uid(),name:'Nouvelle séance',exos:[]});
- else if(a=='delday'){if(S.draft&&S.draft.day==S.program[d].id)S.draft=null;S.program.splice(d,1)}
+ else if(a=='delday'){const o=S.program[d],dr=S.draft&&S.draft.day==o.id?S.draft:null;if(dr)S.draft=null;S.program.splice(d,1);undoable('Séance « '+o.name+' » supprimée',()=>{S.program.splice(d,0,o);if(dr&&!S.draft)S.draft=dr})}
  else if(a=='addexo')S.program[d].exos.push(ex('Nouvel exercice',3,8,12,20,2.5));
- else if(a=='delexo')S.program[d].exos.splice(j,1);
- else if(a=='delh')S.history.splice(i,1);
- else if(a=='adj')S.adj=(S.adj||0)+(+b.dataset.v);
+ else if(a=='delexo'){const xs=S.program[d].exos,o=xs[j];xs.splice(j,1);undoable('Exercice « '+o.name+' » supprimé',()=>xs.splice(j,0,o))}
+ else if(a=='delh'){const o=S.history[i];S.history.splice(i,1);undoable('Séance du '+fd(o.t)+' supprimée de l\'historique',()=>S.history.splice(i,0,o))}
+ else if(a=='adj'){if(Date.now()-(S.adjT||0)>=14*864e5){S.adj=(S.adj||0)+(+b.dataset.v);S.adjT=Date.now()}}
  else if(a=='addw'){const v=parseFloat($('#wi').value);if(v>0){const ds=$('#wd').value||dk(),t=new Date(ds+'T08:00').getTime();S.weights=S.weights.filter(q=>new Date(q.t).toLocaleDateString('sv')!=ds);S.weights.push({t,w:v});S.weights.sort((a,b)=>a.t-b.t)}}
- else if(a=='addf'){const g=id=>parseFloat($('#'+id).value)||0;S.food[ND]=(S.food[ND]||[]).concat({m:$('#fm').value,n:$('#fn').value.trim()||'Repas',k:g('fk'),p:g('fp'),g:g('fg'),l:g('fl'),q:g('fq')||1})}
+ else if(a=='addf'){const g=id=>parseFloat($('#'+id).value)||0,nm=$('#fn').value.trim();if(!nm&&!g('fk')&&!g('fp')&&!g('fg')&&!g('fl'))AM='Indique au moins un nom ou des valeurs avant d\'ajouter.';else S.food[ND]=(S.food[ND]||[]).concat({m:$('#fm').value,n:nm||'Repas',k:g('fk'),p:g('fp'),g:g('fg'),l:g('fl'),q:g('fq')||1})}
  else if(a=='favadd')S.food[ND]=(S.food[ND]||[]).concat(Object.assign({},S.favs[i],{m:$('#fm').value,q:parseFloat($('#fq').value)||1}));
  else if(a=='delf')S.food[ND].splice(i,1);
  else if(a=='copy1'){const x=(S.food[b.dataset.dt]||[])[i];if(x&&b.dataset.dt!=ND){S.food[ND]=(S.food[ND]||[]).concat(Object.assign({},x));NM='Copié : '+x.n+'.'}else NM='Choisis un autre jour.'}
@@ -220,13 +249,14 @@ document.addEventListener('click',ev=>{
  else if(a=='starf'){const x=S.food[ND][i];if(!S.favs.some(q=>q.n==x.n))S.favs.push(Object.assign({},x,{q:1}))}
  else if(a=='delfav')S.favs.splice(i,1);
  else if(a=='addcl')S.cost.lines.push({id:uid(),n:'Nouvelle dépense',cat:'Autre',amt:0,per:'mois'});
- else if(a=='delcl')S.cost.lines.splice(i,1);
+ else if(a=='delcl'){const o=S.cost.lines[i];S.cost.lines.splice(i,1);undoable('Dépense « '+o.n+' » supprimée',()=>S.cost.lines.splice(i,0,o))}
  else if(a=='theme'){S.theme=b.dataset.v;document.documentElement.dataset.theme=S.theme}
  else if(a=='opend'){ND=b.dataset.dt;S.tab='nutri'}
  save();render();
 });
 document.addEventListener('change',ev=>{
  const t=ev.target,k=t.dataset.k;if(!k)return;
+ if(k=='imf'){const f=t.files[0];if(f){const r=new FileReader();r.onload=()=>{DM=importData(r.result)?'Sauvegarde importée.':'Fichier invalide : choisis une sauvegarde exportée par Coach.';save();render()};r.readAsText(f)}return}
  const D=S.draft&&S.draft.x[t.dataset.x],n=parseFloat(t.value)||0;
  if(k=='c')D.c=n;else if(k=='r')D.r[+t.dataset.i]=Math.max(0,Math.round(n));
  else if(k=='pain')D.pain=t.checked;else if(k=='note')S.draft.note=t.value;
@@ -243,5 +273,6 @@ document.addEventListener('change',ev=>{
  save();
 });
 render();
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&dk()!=TD)render()});
 try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js')}catch(e){}
 </script></body></html>
