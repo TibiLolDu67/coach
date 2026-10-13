@@ -14,7 +14,8 @@ while ($l.IsListening) {
     $b = [IO.File]::ReadAllBytes($f)
     $t = $types[[IO.Path]::GetExtension($f)]
     if ($t) { $c.Response.ContentType = $t }
-    $c.Response.OutputStream.Write($b, 0, $b.Length)
+    $c.Response.Headers['Cache-Control'] = 'no-cache'
+    try { $c.Response.ContentLength64 = $b.Length; if ($c.Request.HttpMethod -ne 'HEAD') { $c.Response.OutputStream.Write($b, 0, $b.Length) } } catch {}
   } else { $c.Response.StatusCode = 404 }
-  $c.Response.Close()
+  try { $c.Response.Close() } catch {}
 }

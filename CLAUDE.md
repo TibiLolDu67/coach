@@ -20,6 +20,8 @@ Usage principal : iPhone (installée sur l'écran d'accueil), plus un PC. Toute 
 - Schéma de `S` : `program[]` (séances avec `exos[]` : name, sets, min, max, charge, step, tip, verdict, why), `history[]`, `draft` (séance en cours), `profile`, `weights[]` ({t, w}), `food{ 'AAAA-MM-JJ': [ {m, n, k, p, g, l, q} ] }` (macros pour 100 g, `q` = coefficient), `favs[]`, `adj` (ajustement kcal du coach), `adjT` (date du dernier ajustement), `cost`, `theme`. Les entrées de `history[].exos[]` portent l'`id` de l'exercice (lien avec le programme).
 - Depuis le lot 2 : chaque exercice a `rest` (repos en secondes, 0 = pas de minuteur) et éventuellement `cs[]` (charges par série ; `charge` vaut alors la plus lourde). Dans `draft.x[id]` : `ok[]` (séries cochées) et `cs[]`. `S.rest` = minuteur en cours ({end, tot}), `S.sound` = son de fin de repos. Programme est dans l'onglet Entraînement.
 - Depuis le lot 3 : sous-onglet Progrès (`vStats`, 1RM estimé `orm()`, records calculés à la volée par `marks()`, rien de stocké), bilan hebdo `bilanCard()` (dans Corps, et sur l'Accueil le jour d'une pesée), adhérence dans `coach()` via `eaten(n)` (moyenne des jours saisis, aujourd'hui exclu ; écart toléré 5 %, vérifié à partir de 5 jours saisis sur 14).
+- Bibliothèque d'aliments (13/10/2026) : `S.lib[]` ({n, k, p, g, l, u} ; `u` = nombre d'utilisations), alimentée par `libAdd()` à chaque ajout dans Jour, proposée en saisie semi-automatique (`sugHtml`, écouteur `input`) et gérée dans Nutrition > Aliments (`vLib`). Courbes kcal / poids / macros dans Nutrition > Historique (`trendCard`, `nchart`, `nser` : jours saisis hors aujourd'hui, moyenne glissante 7 jours ; trois panneaux empilés sur le même axe du temps, jamais de double axe ; couleurs de séries `--s1` à `--s3`).
+- Fichier d'ajout : un JSON `{coach:'ajout', food:{date:[...]}, weights:[{d, w}]}` passé à l'import complète les données sans rien écraser (jours de repas absents, pesées absentes, aliments en bibliothèque). C'est ainsi que l'Excel « suivi macro » de Victor a été repris (`ajout-excel.json`, hors git car le dépôt est public : **ne jamais committer de données personnelles**).
 - Les migrations sont dans `migrate()` (appelée au chargement et après un import). Les suppressions passent par `undoable()` (bandeau « Annuler » 6 secondes).
 - Test en local : `.claude/serve.ps1` sert l'appli sur http://localhost:8123 (nécessaire pour le service worker).
 - **Ne jamais casser les données existantes** : toute évolution du schéma passe par une migration au chargement (valeurs par défaut, conversion), jamais par une réinitialisation.
@@ -67,7 +69,7 @@ Puis : hébergement (Cloudflare Pages ou GitHub Pages) et 1 à 2 semaines d'usag
 16. Courbes de progression par exercice, 1RM estimé (Epley) et records personnels (voyant « RECORD »).
 
 ### Lot 4 : nutrition
-20. Bibliothèque d'aliments réutilisables avec recherche.
+20. Bibliothèque d'aliments réutilisables avec recherche. (fait le 13/10/2026, avec la reprise de l'Excel et les courbes de nutrition ; à valider sur iPhone)
 22. Repas types (petit-déjeuner habituel en un tap).
 14. Afficher « il te reste X kcal et Y g de protéines ».
 
@@ -84,5 +86,5 @@ Puis : hébergement (Cloudflare Pages ou GitHub Pages) et 1 à 2 semaines d'usag
 21. Recherche d'aliments dans Open Food Facts ou Ciqual, éventuellement scan de code-barres.
 25. Suivi des mensurations dans le temps (tour de taille).
 26. Rappel de sauvegarde si pas d'export depuis 7 jours.
-28. Import Notion et Excel : convertir ses fichiers une fois au format de sauvegarde plutôt que coder un importeur.
+28. Import Notion et Excel : convertir ses fichiers une fois au format de sauvegarde plutôt que coder un importeur. (Excel fait le 13/10/2026 ; Notion reste à faire)
 - Arrivée guidée, fiches d'exercices.
