@@ -90,5 +90,5 @@ Puis : hébergement (Cloudflare Pages ou GitHub Pages) et 1 à 2 semaines d'usag
 21. Recherche d'aliments dans Open Food Facts ou Ciqual, éventuellement scan de code-barres.
 25. Suivi des mensurations dans le temps (tour de taille).
 26. Rappel de sauvegarde si pas d'export depuis 7 jours. (fait le 16/10/2026 : `S.lastExp`, carte sur l'Accueil)
-28. Import Notion et Excel : convertir ses fichiers une fois au format de sauvegarde plutôt que coder un importeur. (Excel fait le 13/10/2026 ; Notion reste à faire)
-- Arrivée guidée, fiches d'exercices.
+28. Import Notion et Excel : convertir ses fichiers une fois au format de sauvegarde plutôt que coder un importeur. (Excel fait le 13/10/2026 ; fiches d'exercices Notion faites le 16/10/2026 dans `ajout-notion.json`, hors git)
+- Arrivée guidée, fiches d'exercices. (fiches faites le 16/10/2026 : `S.sheets[]` ({n, t}), importées depuis l'export Notion via un fichier d'ajout `{coach:'ajout', sheets:[...]}` ; chaque exercice affiche la fiche de même nom ou celle choisie dans Programme (`e.sheet`, `fiche(e)`), dans « Comment faire » pendant la séance ; liste complète en bas de Programme)
