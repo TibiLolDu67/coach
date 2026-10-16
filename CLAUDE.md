@@ -35,10 +35,11 @@ Usage principal : iPhone (installée sur l'écran d'accueil), plus un PC. Toute 
 - Nutrition : saisie des macros **pour 100 g puis un coefficient de portion** (comme son Excel : 200 g mangés = coefficient 2). Garder ce fonctionnement.
 - Le coach s'appelle « Coach ». Thème clair (défaut) ou sombre au choix dans Profil > Options.
 
-## Design (choix validés)
-- Thème clair : cartes blanches arrondies, boutons noirs, barre de navigation noire flottante en bas.
-- Thème sombre : carte dégradée violette « Plan du jour » avec anneau de progression, tuiles de stats, listes avec bouton lecture ▶.
-- Sérieux et minimaliste, avec une touche « salle de contrôle industrielle » (voyants d'état, interrupteurs). Pas de cartoon.
+## Design (refonte du 16/10/2026, version précédente sous le repère git `avant-refonte-visuelle`)
+- Identité sombre et orange, « appli sportive haut de gamme » : fond `#0B0D0F`, surfaces `#14171A` / `#1D2126`, bordures `#2B3036`, texte `#F5F6F7` / `#A6ADB5`, accent orange `#FF7A2F` (survol `#FF914D`). Le thème clair garde les mêmes formes avec l'accent `#F06A1E`. Tous les tokens sont en tête du `<style>` (`:root` = sombre, `[data-theme=light]` = clair).
+- L'orange est réservé aux actions principales, à la sélection, à la progression et aux données importantes. Vert, jaune et rouge gardent leur sens (succès, alerte, erreur) et sont toujours accompagnés d'un libellé.
+- Cartes arrondies à 24 px (Plan du jour 28 px), contrôles à 14 px, zones tactiles d'au moins 44 px, transitions de 150 à 180 ms coupées si l'appareil demande moins d'animations. Voyants d'état en pastilles avec point lumineux (touche « salle de contrôle » conservée). Pas de glassmorphism ni de dégradé multicolore.
+- Une refonte visuelle ne touche que la présentation : pas de logique, de textes métier, de parcours ni de données.
 
 ## Façon de travailler
 - Victor débute avec Claude Code : expliquer simplement ce qui a été fait, en français, sans jargon inutile.

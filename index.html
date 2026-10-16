@@ -2,54 +2,117 @@
 <html lang="fr"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Coach</title>
-<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#111114"><link rel="apple-touch-icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Coach">
+<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0B0D0F"><link rel="apple-touch-icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Coach">
 <style>
-:root{--bg:#0b0b0f;--pan:#17171d;--ln:#2a2a33;--tx:#f2f2f5;--mu:#8e8e9c;--acc:#8b5cf6;--grn:#34b27b;--red:#e5534b;--in:#101015;--on:#fff;--soft:#23232c;--lamp:#33333d;--gt:#06140d;--amb:#f5a524;--hero:linear-gradient(120deg,#6d28d9,#a855f7);--ring:#fbbf24;--navbg:#1c1c24;--s1:#3987e5;--s2:#d95926;--s3:#199e70;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:dark}
-[data-theme=light]{--bg:#f3f3f5;--pan:#fff;--ln:#e8e8ec;--tx:#111114;--mu:#767683;--acc:#111114;--grn:#2f9e6e;--red:#d1453b;--in:#f3f3f5;--on:#fff;--soft:#efeff2;--lamp:#e3e3e8;--gt:#fff;--amb:#e0a030;--hero:#111114;--ring:#fff;--navbg:#111114;--s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;color-scheme:light}
+/* ===== Tokens : thème sombre (identité principale) ===== */
+:root{--bg:#0B0D0F;--pan:#14171A;--soft:#1D2126;--ln:#2B3036;--ln2:#3A4047;--tx:#F5F6F7;--mu:#A6ADB5;--acc:#FF7A2F;--acc2:#FF914D;--accs:rgba(255,122,47,.14);--on:#0B0D0F;--in:#101316;
+--grn:#3FB37F;--red:#F0564A;--amb:#F2B33D;--grnt:#5FD39C;--redt:#FF8A80;--ambt:#F6C35B;--lamp:#23282E;--gt:#06140D;
+--hero:linear-gradient(160deg,#1F2328 0%,#14171A 70%);--ring:#FF7A2F;--navbg:#14171A;--navln:#2B3036;--sh:0 14px 34px -22px rgba(0,0,0,.9);
+--s1:#3987e5;--s2:#d95926;--s3:#199e70;--rc:24px;--rk:14px;--ease:cubic-bezier(.2,.7,.2,1);
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:dark}
+/* ===== Tokens : thème clair (mêmes formes, accent orange) ===== */
+[data-theme=light]{--bg:#F3F4F6;--pan:#FFFFFF;--soft:#EEF0F3;--ln:#E1E4E8;--ln2:#C9CED4;--tx:#111316;--mu:#5C636B;--acc:#F06A1E;--acc2:#FF7A2F;--accs:rgba(240,106,30,.12);--on:#0B0D0F;--in:#F7F8FA;
+--grn:#23955F;--red:#D4433A;--amb:#D9971A;--grnt:#1B7A4D;--redt:#B9342C;--ambt:#8A5E00;--lamp:#E9EBEE;--gt:#FFFFFF;
+--hero:linear-gradient(160deg,#1F2328 0%,#111316 75%);--ring:#FF7A2F;--navbg:#111316;--navln:#111316;--sh:0 1px 2px rgba(16,24,40,.05),0 10px 26px -18px rgba(16,24,40,.25);
+--s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;color-scheme:light}
+
+/* ===== Base ===== */
 html{scroll-padding-top:env(safe-area-inset-top,0px);background:var(--bg)}
-body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}
-#app{max-width:560px;margin:0 auto;padding:14px 14px 180px}
-h1{font:700 22px system-ui,-apple-system,sans-serif;color:var(--tx);margin:4px 0 14px}.ico{width:44px;height:44px;border-radius:10px;background:var(--acc);color:var(--on);display:flex;align-items:center;justify-content:center;flex:none}.sec{font-weight:600;color:var(--mu);margin:18px 0 8px}.soft.play{width:44px;padding:0;background:var(--pan);border:1px solid var(--ln);color:var(--acc);font-size:16px}
-nav{display:flex;gap:6px;margin-bottom:14px}
-.card{background:var(--pan);border:1px solid var(--ln);border-radius:20px;padding:14px;margin-bottom:12px}
-button{background:var(--acc);color:var(--on);border:0;border-radius:999px;padding:8px 14px;font:600 15px system-ui,sans-serif;min-height:44px;cursor:pointer}
-button:active{opacity:.7}
-button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.5 system-ui,-apple-system,"SF Pro Text","Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+#app{max-width:560px;margin:0 auto;padding:16px 16px 180px}
+h1{font:800 28px/1.1 system-ui,-apple-system,sans-serif;letter-spacing:-.02em;color:var(--tx);margin:6px 0 16px}
+small{color:var(--mu);font-size:13px;line-height:1.45}
+b{font-weight:700}
+hr{border:0;border-top:1px solid var(--ln);margin:14px 0}
+.sec{font-weight:700;font-size:15px;letter-spacing:-.01em;color:var(--tx);margin:22px 2px 10px}
+.row{display:flex;gap:8px;align-items:center}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}.grid input{padding:8px 4px;text-align:center}
+.g3{display:grid;grid-template-columns:1fr 1.2fr 1.2fr;gap:6px;margin:8px 0}.g3 input,.g3 select{padding:8px 4px;font-size:14px}
+.full{width:100%}
+
+/* ===== Surfaces ===== */
+.card{background:var(--pan);border:1px solid var(--ln);border-radius:var(--rc);padding:16px;margin-bottom:12px;box-shadow:var(--sh)}
+.card>b:first-child{font-size:17px;letter-spacing:-.01em}
+.ico{width:44px;height:44px;border-radius:14px;background:var(--accs);color:var(--acc);display:flex;align-items:center;justify-content:center;flex:none}
+.hero{position:relative;overflow:hidden;background:var(--hero);color:#fff;border:1px solid var(--navln);border-radius:28px;padding:20px;display:flex;align-items:center;gap:16px;margin-bottom:12px;box-shadow:var(--sh)}
+.hero::after{content:"";position:absolute;right:-70px;top:-70px;width:200px;height:200px;background:radial-gradient(circle,rgba(255,122,47,.22),transparent 70%);pointer-events:none}
+.hero>*{position:relative;z-index:1}.hero small{display:block;color:rgba(255,255,255,.72)}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}.tiles>*{min-width:0}
+.tile{box-sizing:border-box;background:var(--pan);color:var(--tx);border:1px solid var(--ln);border-radius:20px;padding:14px 16px;text-align:left;min-height:0;display:block;width:100%;box-shadow:var(--sh)}
+.tile small{display:block}.tile .n{font:800 30px/1.15 system-ui,-apple-system,sans-serif;letter-spacing:-.02em;margin:4px 0 2px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+
+/* ===== Boutons ===== */
+button{background:var(--acc);color:var(--on);border:1px solid transparent;border-radius:var(--rk);padding:10px 16px;font-family:inherit;font-weight:650;font-size:15px;line-height:1.2;min-height:44px;cursor:pointer;
+ transition:background-color .18s var(--ease),border-color .18s var(--ease),color .18s var(--ease),transform .15s var(--ease)}
+button:active{transform:scale(.97)}
+button:disabled{opacity:.45;cursor:not-allowed;transform:none}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--acc2);outline-offset:2px}
+.soft{background:var(--soft);color:var(--tx);border-color:var(--ln)}
+.danger{background:rgba(240,86,74,.12);color:var(--redt);border-color:rgba(240,86,74,.4)}
+.soft.play{width:44px;padding:0;background:var(--acc);color:var(--on);border:0;border-radius:50%;font-size:15px}
+.sg{display:block;width:100%;text-align:left;border-radius:var(--rk);margin-top:6px;font-weight:550}
+.seg{display:flex;gap:4px;background:var(--in);border:1px solid var(--ln);border-radius:16px;padding:4px}
+.seg button{flex:1;background:transparent;color:var(--mu);border:0;border-radius:12px}.seg button.on{background:var(--acc);color:var(--on)}
+.feel{gap:6px}.feel button{flex:1;padding:6px;background:var(--soft);color:var(--tx);border-color:var(--ln)}.feel button.on{background:var(--acc);color:var(--on);border-color:var(--acc)}
+@media (hover:hover){
+ button:hover{background:var(--acc2)}
+ .soft:hover,.feel button:not(.on):hover,.set button:hover{background:var(--soft);border-color:var(--ln2)}
+ .soft.play:hover{background:var(--acc2)}
+ .danger:hover{background:rgba(240,86,74,.2)}
+ .tile:hover{background:var(--pan);border-color:var(--ln2)}
+ .seg button:not(.on):hover,nav.sub button:not(.on):hover{background:var(--soft);color:var(--tx)}
+ nav.tabbar button:not(.on):hover{background:rgba(255,255,255,.06);color:#fff}
+ .toast button:hover{background:rgba(255,255,255,.18)}}
+
+/* ===== Navigation ===== */
+nav{display:flex;gap:6px;margin-bottom:16px}
 nav button{flex:1;padding:6px 2px;font-size:14px;background:var(--pan);color:var(--mu);border:1px solid var(--ln)}
 nav button.on{background:var(--tx);color:var(--bg);border-color:var(--tx)}
-nav.sub{margin-top:-4px;overflow-x:auto}nav.sub button{flex:1 0 auto;padding:4px 10px;font-size:13px;min-height:36px;background:transparent;border:0;border-bottom:2px solid var(--ln);border-radius:0}
-nav.sub button.on{background:transparent;color:var(--acc);border-bottom-color:var(--acc)}
-.full{width:100%}.danger{background:var(--red);color:#fff}.soft{background:var(--soft);color:var(--tx)}
-.feel button{flex:1;padding:6px;background:var(--soft);color:var(--tx)}.feel button.on{background:var(--acc);color:var(--on)}
-input,textarea,select{font:600 16px ui-monospace,Menlo,Consolas,monospace;border:1px solid var(--ln);border-radius:12px;padding:8px;background:var(--in);color:var(--tx);width:100%;box-sizing:border-box}
-input[type=checkbox]{width:26px;height:26px;accent-color:var(--acc);flex:none}
-.set{display:flex;gap:8px;align-items:center;margin:8px 0}.set input{text-align:center;font-size:22px}.set button{width:52px;font-size:22px;padding:0;background:var(--soft);color:var(--tx)}
-.row{display:flex;gap:8px;align-items:center}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:8px 0}.grid input{padding:6px;text-align:center}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.lamp{display:inline-block;padding:1px 9px;border-radius:99px;font:600 11px ui-monospace,Menlo,Consolas,monospace;letter-spacing:.06em;background:var(--lamp);color:var(--tx)}
+nav.sub{margin-top:-6px;overflow-x:auto;gap:4px;background:var(--pan);border:1px solid var(--ln);border-radius:16px;padding:4px;scrollbar-width:none}
+nav.sub::-webkit-scrollbar{display:none}
+nav.sub button{flex:1 0 auto;padding:6px 12px;font-size:14px;font-weight:600;min-height:44px;background:transparent;color:var(--mu);border:0;border-radius:12px}
+nav.sub button.on{background:var(--accs);color:var(--acc)}
+nav.tabbar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom,0px));width:min(520px,calc(100% - 28px));margin:0;background:var(--navbg);border:1px solid var(--navln);border-radius:24px;padding:6px;gap:4px;box-shadow:0 18px 40px -14px rgba(0,0,0,.7);z-index:5;box-sizing:border-box}
+nav.tabbar button{flex:1;background:transparent;border:0;color:#8B929A;min-height:52px;padding:4px 2px;border-radius:18px;font-size:11px;font-weight:600;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}
+nav.tabbar button.on{background:var(--accs);color:var(--acc)}
+
+/* ===== Formulaires ===== */
+input,textarea,select{font:600 16px/1.3 system-ui,-apple-system,sans-serif;font-variant-numeric:tabular-nums;border:1px solid var(--ln);border-radius:12px;padding:10px 12px;background:var(--in);color:var(--tx);width:100%;box-sizing:border-box;transition:border-color .18s var(--ease),box-shadow .18s var(--ease)}
+textarea{font-weight:500}
+input:not([type=checkbox]),select{min-height:44px}
+input::placeholder,textarea::placeholder{color:var(--mu);opacity:.85;font-weight:500}
+input:focus,textarea:focus,select:focus{border-color:var(--acc);box-shadow:0 0 0 3px var(--accs);outline:none}
+input[type=checkbox]{width:26px;height:26px;accent-color:var(--acc);flex:none;padding:0;box-shadow:none}
+label.chk{display:flex;gap:10px;align-items:center;font-weight:600;margin:12px 0}
+details{margin:10px 0}summary{font-weight:600;cursor:pointer}summary::marker{color:var(--acc)}
+.set{display:flex;gap:8px;align-items:center;margin:10px 0}.set b{min-width:22px;color:var(--mu);font-size:14px}
+.set input{flex:1;min-width:0;text-align:center;font-size:22px;font-weight:700;padding:8px 4px}
+.set button{flex:none;width:46px;font-size:22px;padding:0;background:var(--soft);color:var(--tx);border-color:var(--ln)}
+.set input.kg{flex:none;width:68px;font-size:16px;padding:8px 2px}.set input[type=checkbox]{flex:none;width:32px;height:32px}
+.set.ok b{color:var(--grn)}.set.ok input[type=number]{border-color:var(--grn)}
+
+/* ===== Voyants, barres, graphiques ===== */
+.lamp{display:inline-flex;align-items:center;gap:6px;vertical-align:1px;padding:2px 10px;border-radius:999px;font:700 11.5px/1.5 system-ui,-apple-system,sans-serif;letter-spacing:.05em;background:var(--lamp);color:var(--mu)}
+.lamp::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;flex:none}
+.g{background:var(--grn);color:var(--gt)}.y{background:var(--amb);color:#14171c}.r{background:var(--red);color:#fff}
+.lamp.g{background:rgba(63,179,127,.15);color:var(--grnt)}.lamp.y{background:rgba(242,179,61,.16);color:var(--ambt)}.lamp.r{background:rgba(240,86,74,.15);color:var(--redt)}
+.rec,.lamp.rec{background:var(--acc);color:var(--on)}
+.bl{display:flex;gap:10px;align-items:flex-start;margin-top:10px}.bl .lamp{flex:none;min-width:84px;justify-content:center;margin-top:2px}
+.bar{height:8px;border:0;border-radius:99px;background:var(--soft);overflow:hidden;margin:4px 0 10px}.bar i{display:block;height:100%;border-radius:99px}
+small:has(+.bar){display:block;margin-top:10px}
 .ct{font:600 10px system-ui,sans-serif;fill:var(--tx)}.cl{font:9px system-ui,sans-serif;fill:var(--mu)}.cg{stroke:var(--ln);stroke-width:1}#nhs{display:block;touch-action:pan-y}
 .lg{display:flex;gap:14px;flex-wrap:wrap;margin:8px 0 4px}.lg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px}
-.sg{display:block;width:100%;text-align:left;border-radius:12px;margin-top:6px;font-weight:500}
-.rec{background:var(--acc);color:var(--on)}.bl{display:flex;gap:10px;align-items:flex-start;margin-top:10px}.bl .lamp{flex:none;min-width:74px;text-align:center;margin-top:2px}
-.g{background:var(--grn);color:var(--gt)}.y{background:var(--amb);color:#14171c}.r{background:var(--red);color:#fff}
-label.chk{display:flex;gap:10px;align-items:center;font-weight:600;margin:10px 0}
-.bar{height:10px;border:1px solid var(--ln);border-radius:6px;background:var(--in);overflow:hidden;margin-bottom:8px}.bar i{display:block;height:100%}
-details{margin:8px 0}summary{font-weight:600;cursor:pointer}
-nav.tabbar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom,0px));width:min(520px,calc(100% - 28px));margin:0;background:var(--navbg);border-radius:999px;padding:6px;gap:4px;box-shadow:0 10px 28px rgba(0,0,0,.3);z-index:5;box-sizing:border-box}
-nav.tabbar button{flex:1;background:transparent;border:0;color:#9b9ba6;min-height:48px;padding:4px 2px;border-radius:999px;font-size:11px;display:flex;flex-direction:column;align-items:center;gap:2px}
-nav.tabbar button.on{background:rgba(255,255,255,.16);color:#fff}
-.hero{background:var(--hero);color:#fff;border-radius:22px;padding:18px;display:flex;align-items:center;gap:14px;margin-bottom:12px}.hero small{display:block;color:rgba(255,255,255,.8)}
-.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
-.tile{background:var(--pan);color:var(--tx);border:1px solid var(--ln);border-radius:18px;padding:14px;text-align:left;min-height:0;display:block;width:100%}.tile small{display:block}.tile .n{font:700 26px ui-monospace,Menlo,Consolas,monospace}
-.seg{display:flex;gap:8px}.seg button{flex:1;background:var(--soft);color:var(--tx)}.seg button.on{background:var(--acc);color:var(--on)}
-.g3{display:grid;grid-template-columns:1fr 1.2fr 1.2fr;gap:6px;margin:8px 0}.g3 input,.g3 select{padding:8px 4px;font-size:14px}
-hr{border:0;border-top:1px solid var(--ln);margin:12px 0}
-small{color:var(--mu)}
-#float{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));width:min(520px,calc(100% - 28px));z-index:6;pointer-events:none}
-.set input{flex:1;min-width:0}.set button{flex:none;width:46px}.set input.kg{flex:none;width:68px;font-size:16px;padding:8px 2px}.set input[type=checkbox]{flex:none;width:32px;height:32px}.set.ok b{color:var(--grn)}.set.ok input[type=number]{border-color:var(--grn)}
-.toast.done{background:var(--grn)}.toast .bar{margin:4px 0 0;border-color:rgba(255,255,255,.25);background:rgba(255,255,255,.12)}.toast .bar i{background:var(--ring)}.toast small{color:rgba(255,255,255,.7)}
-.toast{pointer-events:auto;margin-top:8px;box-sizing:border-box;background:var(--navbg);color:#fff;border:1px solid var(--ln);border-radius:18px;padding:8px 8px 8px 16px;display:flex;align-items:center;gap:10px;box-shadow:0 10px 28px rgba(0,0,0,.3);z-index:6}.toast span{flex:1}.toast button{background:rgba(255,255,255,.16);color:#fff}
+
+/* ===== Bandeaux flottants (Annuler, minuteur de repos) ===== */
+#float{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(88px + env(safe-area-inset-bottom,0px));width:min(520px,calc(100% - 28px));z-index:6;pointer-events:none}
+.toast{pointer-events:auto;margin-top:8px;box-sizing:border-box;background:#1D2126;color:#F5F6F7;border:1px solid #2B3036;border-radius:20px;padding:8px 8px 8px 16px;display:flex;align-items:center;gap:10px;box-shadow:0 18px 40px -14px rgba(0,0,0,.7);z-index:6}
+.toast span{flex:1}.toast small{color:#A6ADB5}
+.toast button{background:rgba(255,255,255,.1);color:#fff;border:0}
+.toast .bar{margin:6px 0 0;background:rgba(255,255,255,.12)}.toast .bar i{background:var(--ring)}
+.toast.done{background:var(--grn);border-color:transparent;color:#06140D}.toast.done button{background:rgba(0,0,0,.16);color:#06140D}
+
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}button:active{transform:none}}
 </style></head><body><div id="app"></div><div id="float"><div id="undo" aria-live="polite"></div><div id="rest"></div></div>
 <script>
 const K='pcm1',$=s=>document.querySelector(s),uid=()=>Math.random().toString(36).slice(2,8);
@@ -91,7 +154,7 @@ function restTick(){
  const ms=r.end-Date.now(),left=Math.max(0,Math.ceil(ms/1000)),st=ms<=0?'done':'run';
  if(ms<=0&&!r.done){r.done=1;save();if(ms>-3000)signal()}
  if(ms<-10000){S.rest=null;save();return restTick()}
- if(el.dataset.st!=st){el.dataset.st=st;el.innerHTML=st=='run'?'<div class="toast"><div style="flex:1"><small>Repos</small> <b id="rt" style="font:700 22px ui-monospace,Menlo,Consolas,monospace"></b><div class="bar"><i id="rb"></i></div></div><button data-a="restadd">+30 s</button><button data-a="restskip">Passer</button></div>':'<div class="toast done"><span><b>Repos terminé.</b> Série suivante !</span><button data-a="restskip">OK</button></div>'}
+ if(el.dataset.st!=st){el.dataset.st=st;el.innerHTML=st=='run'?'<div class="toast"><div style="flex:1"><small>Repos</small> <b id="rt" style="font:800 22px system-ui,-apple-system,sans-serif"></b><div class="bar"><i id="rb"></i></div></div><button data-a="restadd">+30 s</button><button data-a="restskip">Passer</button></div>':'<div class="toast done"><span><b>Repos terminé.</b> Série suivante !</span><button data-a="restskip">OK</button></div>'}
  if(st=='run'){$('#rt').textContent=Math.floor(left/60)+':'+String(left%60).padStart(2,'0');$('#rb').style.width=Math.max(0,Math.min(100,ms/r.tot/10))+'%'}}
 
 function vSeance(){
@@ -144,7 +207,7 @@ function vStats(){
  if(!xs.length)return '<div class="card">Pas encore de données. Termine une séance pour voir ta progression ici.</div>';
  return '<div class="card"><small>1RM estimé : la charge que tu pourrais soulever une seule fois, calculée à partir de tes séries (formule d\'Epley). C\'est un repère pour suivre ta force, pas une charge à tester.</small></div>'+xs.map(({e,pts})=>{
   const cur=pts[pts.length-1],best=pts.reduce((a,p)=>p.v>a.v?p:a),d=cur.v-pts[0].v,rec=pts.length>1&&pts.slice(0,-1).every(p=>p.v<cur.v),o=cur.o;
-  return `<div class="card"><b>${esc(e.name)}</b>${rec?' <span class="lamp rec">RECORD</span>':''}<div class="g2" style="margin:8px 0"><div><small>1RM estimé</small><div style="font:700 26px ui-monospace,Menlo,Consolas,monospace">${n1(cur.v)} kg</div></div><div><small>Record</small><div style="font:700 26px ui-monospace,Menlo,Consolas,monospace">${n1(best.v)} kg</div><small>${fd(best.t)}</small></div></div>${spark(pts)}<div><small>Dernière séance : ${o.cs?o.cs.map((c,i)=>c+'×'+o.r[i]).join(' / '):o.c+' kg × '+o.r.join('/')}${pts.length>1?`. Depuis la première : ${d>=0?'+':'−'}${n1(Math.abs(d))} kg sur ${pts.length} séances`:''}.</small></div></div>`}).join('')}
+  return `<div class="card"><b>${esc(e.name)}</b>${rec?' <span class="lamp rec">RECORD</span>':''}<div class="g2" style="margin:8px 0"><div><small>1RM estimé</small><div style="font:800 28px/1.15 system-ui,-apple-system,sans-serif;letter-spacing:-.02em">${n1(cur.v)} kg</div></div><div><small>Record</small><div style="font:800 28px/1.15 system-ui,-apple-system,sans-serif;letter-spacing:-.02em">${n1(best.v)} kg</div><small>${fd(best.t)}</small></div></div>${spark(pts)}<div><small>Dernière séance : ${o.cs?o.cs.map((c,i)=>c+'×'+o.r[i]).join(' / '):o.c+' kg × '+o.r.join('/')}${pts.length>1?`. Depuis la première : ${d>=0?'+':'−'}${n1(Math.abs(d))} kg sur ${pts.length} séances`:''}.</small></div></div>`}).join('')}
 const dayK=(d,k)=>(S.food[d]||[]).reduce((a,x)=>a+x[k]*(x.q||1),0);
 function eaten(n){const ds=[];for(let i=1;i<=n;i++){const d=new Date(Date.now()-i*864e5).toLocaleDateString('sv');if((S.food[d]||[]).length)ds.push(d)}
  const av=k=>ds.length?ds.reduce((a,d)=>a+dayK(d,k),0)/ds.length:0;return{n:ds.length,k:av('k'),p:av('p')}}
@@ -270,8 +333,8 @@ function vNutri(){const pl=plan(),f=S.food[ND]||[],q=x=>x.q||1,s=k=>f.reduce((a,
  `<div class="card"><b>Ajouter</b><select id="fm" data-k="fm" style="margin:8px 0">${MEALS.map(m=>op(m,m,fm)).join('')}</select><input id="fn" placeholder="Aliment (tape les premières lettres)" autocomplete="off"><div id="sug"></div><small>Macros pour 100 g (ou 1 portion), puis le coefficient : 2 pour 200 g.</small><div class="g2" style="margin-top:8px">${inp('fk','kcal /100 g')}${inp('fp','Prot. /100 g')}${inp('fg','Gluc. /100 g')}${inp('fl','Lip. /100 g')}</div><label style="display:block;margin-top:8px"><small>Coefficient</small><input id="fq" type="number" step="any" inputmode="decimal" value="1"></label><p><button class="full" data-a="addf">+ Ajouter</button></p>${AM?`<p><small>${esc(AM)}</small></p>`:''}`+
  (S.favs.length?'<small>Favoris : un tap les ajoute au repas et au coefficient choisis</small>'+S.favs.map((x,i)=>`<div class="row" style="margin-top:6px"><button class="full soft" data-a="favadd" data-i="${i}">${esc(x.n)} (${Math.round(x.k)} kcal /100 g)</button><button class="danger" data-a="delfav" data-i="${i}" aria-label="Retirer le favori">✕</button></div>`).join(''):'')+`</div>`+
  `${tplCard()}<div class="card"><b>Copier depuis un autre jour</b><div class="g2" style="margin-top:8px"><input type="date" data-k="cd" value="${cd}"><select data-k="cm">${op('all','Tous les repas',CM)}${MEALS.map(m=>op(m,m,CM)).join('')}</select></div><p><button class="full" data-a="copy">Tout copier ici</button></p>`+
- (cd==ND?'':(src.length?'<small>Ou un seul aliment :</small>'+src.map(({x,i})=>`<div class="row" style="margin-top:6px"><span style="flex:1">${esc(x.n)} <small>×${q(x)}, ${Math.round(x.k*q(x))} kcal</small></span><button class="soft" style="min-height:36px;padding:6px 14px" data-a="copy1" data-dt="${cd}" data-i="${i}">Copier</button></div>`).join(''):'<small>Aucun aliment à cette date.</small>'))+`<div><small>${esc(NM)}</small></div></div>`+
- MEALS.map(m=>{const es=f.map((x,i)=>({x,i})).filter(o=>(o.x.m||'Autre')==m);return es.length?`<div class="row sec"><span style="flex:1">${m}, ${Math.round(es.reduce((a,o)=>a+o.x.k*q(o.x),0))} kcal</span><button class="soft" style="min-height:36px;padding:4px 12px;font-size:13px" data-a="mktpl" data-v="${m}">★ Repas type</button></div>`+es.map(({x,i})=>`<div class="card"><b>${esc(x.n)}</b> <small>${Math.round(x.k*q(x))} kcal, P ${Math.round(x.p*q(x))}, G ${Math.round(x.g*q(x))}, L ${Math.round(x.l*q(x))}</small><label class="row" style="margin:8px 0"><small style="flex:1">Coefficient</small><input type="number" step="any" inputmode="decimal" data-k="ec" data-i="${i}" value="${q(x)}" style="width:90px"></label><p class="row" style="margin-bottom:0"><button ${bt} data-a="dupf" data-i="${i}">Dupliquer</button><button ${bt} data-a="starf" data-i="${i}">★ Favori</button><button ${bt} data-a="delf" data-i="${i}">Supprimer</button></p></div>`).join(''):''}).join('')}
+ (cd==ND?'':(src.length?'<small>Ou un seul aliment :</small>'+src.map(({x,i})=>`<div class="row" style="margin-top:6px"><span style="flex:1">${esc(x.n)} <small>×${q(x)}, ${Math.round(x.k*q(x))} kcal</small></span><button class="soft" style="min-height:44px;padding:6px 14px" data-a="copy1" data-dt="${cd}" data-i="${i}">Copier</button></div>`).join(''):'<small>Aucun aliment à cette date.</small>'))+`<div><small>${esc(NM)}</small></div></div>`+
+ MEALS.map(m=>{const es=f.map((x,i)=>({x,i})).filter(o=>(o.x.m||'Autre')==m);return es.length?`<div class="row sec"><span style="flex:1">${m}, ${Math.round(es.reduce((a,o)=>a+o.x.k*q(o.x),0))} kcal</span><button class="soft" style="min-height:44px;padding:4px 12px;font-size:13px" data-a="mktpl" data-v="${m}">★ Repas type</button></div>`+es.map(({x,i})=>`<div class="card"><b>${esc(x.n)}</b> <small>${Math.round(x.k*q(x))} kcal, P ${Math.round(x.p*q(x))}, G ${Math.round(x.g*q(x))}, L ${Math.round(x.l*q(x))}</small><label class="row" style="margin:8px 0"><small style="flex:1">Coefficient</small><input type="number" step="any" inputmode="decimal" data-k="ec" data-i="${i}" value="${q(x)}" style="width:90px"></label><p class="row" style="margin-bottom:0"><button ${bt} data-a="dupf" data-i="${i}">Dupliquer</button><button ${bt} data-a="starf" data-i="${i}">★ Favori</button><button ${bt} data-a="delf" data-i="${i}">Supprimer</button></p></div>`).join(''):''}).join('')}
 function vNHist(){const pl=plan(),ds=Object.keys(S.food).filter(d=>S.food[d].length).sort().reverse();
  if(!ds.length)return '<div class="card">Aucun jour enregistré. Ajoute des repas dans l\'onglet Jour.</div>';
  const tot=d=>['k','p','g','l'].map(k=>S.food[d].reduce((a,x)=>a+x[k]*(x.q||1),0)),last=ds.slice(0,7).map(tot),av=[0,1,2,3].map(i=>Math.round(last.reduce((a,x)=>a+x[i],0)/last.length));
@@ -288,7 +351,7 @@ function vHome(){
  tk=[['Séance du jour',S.history.some(h=>new Date(h.t).toLocaleDateString('sv')==dk())],['Repas saisis',f.length>0],['Calories dans la cible',!!pl&&sm('k')>=pl.k*.9&&sm('k')<=pl.k*1.05],['Pesée de la semaine',S.weights.some(w=>w.t>wk)]],
  done=tk.filter(x=>x[1]).length,pc=done*25,C=2*Math.PI*30,
  tl=(l,n,sub,t)=>`<button class="tile" data-a="tab" data-t="${t}"><small>${l}</small><div class="n">${n}</div><small>${sub}</small></button>`;
- return `<div style="margin:6px 0 14px"><small>${new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})}</small><div style="font:700 26px system-ui">Bonjour${p.name?', '+esc(p.name):''}</div></div>`+
+ return `<div style="margin:6px 0 14px"><small>${new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})}</small><div style="font:800 28px/1.15 system-ui,-apple-system,sans-serif;letter-spacing:-.02em">Bonjour${p.name?', '+esc(p.name):''}</div></div>`+
  syncAlert()+bkCard()+`<div class="hero"><div style="flex:1"><b style="font-size:20px">Plan du jour</b><small>${done}/4 complet</small><div style="margin-top:8px">${tk.map(x=>`<small>${x[1]?'✔':'○'} ${x[0]}</small>`).join('')}</div></div><svg viewBox="0 0 80 80" width="88" height="88" role="img" aria-label="${pc} % complet"><circle cx="40" cy="40" r="30" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="9"/><circle cx="40" cy="40" r="30" fill="none" style="stroke:var(--ring)" stroke-width="9" stroke-linecap="round" stroke-dasharray="${C*pc/100} ${C}" transform="rotate(-90 40 40)"/><text x="40" y="45" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">${pc}%</text></svg></div>`+
  `<div class="tiles">${tl('Calories',Math.round(sm('k')),pl?(sm('k')<=pl.k?'reste '+Math.round(pl.k-sm('k'))+' sur '+pl.k:Math.round(sm('k')-pl.k)+' au-dessus de '+pl.k):'kcal aujourd\'hui','nutri')}${tl('Protéines',Math.round(sm('p')),pl?(sm('p')<pl.P?'reste '+Math.round(pl.P-sm('p'))+' g sur '+pl.P:'cible de '+pl.P+' g atteinte'):'g aujourd\'hui','nutri')}${tl('Poids',lastW()?lastW().toFixed(1):'—',tr!==null?(tr>0?'+':'')+tr.toFixed(2)+' kg/sem':'kg, tendance après 3 pesées','corps')}${tl('Séances',ses,'sur les 7 derniers jours','hist')}</div>`+
  (S.weights.length&&new Date(S.weights[S.weights.length-1].t).toLocaleDateString('sv')==dk()?bilanCard():'')+chefCard()+(S.draft?'<div class="card"><button class="full" data-a="tab" data-t="seance">Reprendre la séance en cours</button></div>':'')+
@@ -489,14 +552,14 @@ async function newPw(p){if(!p||p.length<6){SM='Au moins 6 caractères.';return u
 function syncHtml(){
  const a=AU(),m=SMETA(),msg=SM?`<p><small>${esc(SM)}</small></p>`:'',h='<b>Compte et synchronisation</b> ';
  if(RECOV)return h+`<p><small>Choisis ton nouveau mot de passe.</small></p><input id="syp" type="password" autocomplete="new-password" placeholder="Nouveau mot de passe"><p><button class="full" data-a="newpw">Enregistrer le mot de passe</button></p>`+msg;
- if(!a)return h+`<p><small>Connecte-toi pour sauvegarder tes données en ligne et retrouver les mêmes sur l'iPhone et le PC.</small></p><input id="sye" type="email" autocomplete="email" placeholder="E-mail" value="${esc(SE)}" style="margin-bottom:8px"><input id="syp" type="password" autocomplete="current-password" placeholder="Mot de passe (6 caractères minimum)"><p class="row"><button style="flex:1" data-a="login">Se connecter</button><button class="soft" style="flex:1" data-a="signup">Créer mon compte</button></p><button class="soft" style="min-height:36px;font-size:13px" data-a="reset">Mot de passe oublié</button>`+msg;
+ if(!a)return h+`<p><small>Connecte-toi pour sauvegarder tes données en ligne et retrouver les mêmes sur l'iPhone et le PC.</small></p><input id="sye" type="email" autocomplete="email" placeholder="E-mail" value="${esc(SE)}" style="margin-bottom:8px"><input id="syp" type="password" autocomplete="current-password" placeholder="Mot de passe (6 caractères minimum)"><p class="row"><button style="flex:1" data-a="login">Se connecter</button><button class="soft" style="flex:1" data-a="signup">Créer mon compte</button></p><button class="soft" style="min-height:44px;font-size:13px" data-a="reset">Mot de passe oublié</button>`+msg;
  const d=SST=='ok'&&dirty(),st=SST=='busy'?['','SYNCHRO…','Échange en cours avec le serveur.']:SST=='ok'?(d?['y','EN ATTENTE','Des modifications partent dans quelques secondes.']:['g','SYNCHRO OK',m.at?'Dernière synchro : '+fdt(m.at)+'.':'']):SST=='offline'?['y','HORS LIGNE','Tes modifications partiront au retour du réseau.']:SST=='conflict'?['r','CONFLIT','Choisis la version à garder.']:SST=='login'?['r','RECONNEXION','Le serveur refuse ta session : déconnecte-toi puis reconnecte-toi.']:SST=='error'?['y','ERREUR','Le serveur ne répond pas. Si ça dure, le projet Supabase est peut-être en pause : relance-le sur supabase.com.']:['','EN ATTENTE',''];
  const sum=o=>{const f=o.food||{},n=Object.keys(f).filter(k=>f[k].length).length;return `${n} jour${n>1?'s':''} de repas, ${(o.history||[]).length} séance${(o.history||[]).length>1?'s':''}, ${(o.weights||[]).length} pesée${(o.weights||[]).length>1?'s':''}`};
  let prev=false;try{prev=!!localStorage.getItem('pcm1-prev')}catch(e){}
  return h+`<span class="lamp ${st[0]}">${st[1]}</span><p><small>Connecté : ${esc(a.email||'')}. ${st[2]}</small></p>`+
  (SST=='conflict'&&SC?`<div style="background:var(--soft);border-radius:14px;padding:12px;margin:8px 0"><b>Les deux versions ont changé depuis la dernière synchro.</b><p><small>Cet appareil (${DEV}) : ${sum(payload())}.<br>En ligne (envoyée depuis ${esc(SC.device||'?')}, ${fdt(Date.parse(SC.updated_at))}) : ${sum(SC.data)}.</small></p><p class="row"><button style="flex:1" data-a="keeplocal">Garder cet appareil</button><button style="flex:1" data-a="keepremote">Garder la version en ligne</button></p><small>L'autre version reste téléchargeable ici après ton choix.</small></div>`:'')+
  `<p class="row"><button class="soft" style="flex:1" data-a="syncnow">Synchroniser</button><button class="soft" style="flex:1" data-a="logout">Se déconnecter</button></p>`+
- (prev?'<button class="soft full" style="min-height:36px;font-size:13px" data-a="dlprev">Télécharger la version écartée au dernier conflit</button>':'')+msg}
+ (prev?'<button class="soft full" style="min-height:44px;font-size:13px" data-a="dlprev">Télécharger la version écartée au dernier conflit</button>':'')+msg}
 function syncAlert(){
  const t=SST=='conflict'?'Tes données ont changé sur deux appareils : choisis laquelle garder.':!AU()&&SMETA().rev!=null?'Synchronisation arrêtée : reconnecte-toi.':'';
  return t?`<div class="card row" style="gap:12px"><span class="lamp r" style="flex:none">SYNCHRO</span><small style="flex:1">${t}</small><button data-a="tab" data-t="data">Voir</button></div>`:''}
