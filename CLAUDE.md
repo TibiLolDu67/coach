@@ -84,8 +84,8 @@ Puis : hébergement (Cloudflare Pages ou GitHub Pages) et 1 à 2 semaines d'usag
 ### Idées en réserve
 12. Planning de la semaine avec jours de repos (l'anneau « Plan du jour » doit pouvoir atteindre 100 % un jour sans séance).
 13. Douleur articulaire : demander quoi faire (baisser, changer d'exercice, amplitude réduite) au lieu de baisser automatiquement.
-17. Volume hebdo par groupe musculaire.
-18. Semaine allégée proposée après 6 à 8 semaines ou si plusieurs exercices régressent.
+17. Volume hebdo par groupe musculaire. (fait le 16/10/2026 : carte en tête de Progrès, `volCard()`, groupe par exercice `grp` réglable dans Programme, sinon deviné par `guessG()`)
+18. Semaine allégée proposée après 6 à 8 semaines ou si plusieurs exercices régressent. (fait le 16/10/2026, adapté au programme de Victor : 8 semaines d'entraînement puis 7 jours sans salle. `S.cycle` = {start, weeks, rest}, carte « Cycle d'entraînement » dans Programme, `cyc()` donne la semaine en cours ; Plan du jour, Coach et bilan en tiennent compte ; le coach suggère d'avancer la semaine sans salle si 3 exercices ou plus régressent)
 19. Exercice de remplacement quand la machine est prise.
 21. Recherche d'aliments dans Open Food Facts ou Ciqual, éventuellement scan de code-barres.
 25. Suivi des mensurations dans le temps (tour de taille).
