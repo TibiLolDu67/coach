@@ -50,7 +50,7 @@ button:disabled{opacity:.45;cursor:not-allowed;transform:none}
 button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--acc2);outline-offset:2px}
 .soft{background:var(--soft);color:var(--tx);border-color:var(--ln)}
 .danger{background:rgba(240,86,74,.12);color:var(--redt);border-color:rgba(240,86,74,.4)}
-.soft.play{width:44px;padding:0;background:var(--acc);color:var(--on);border:0;border-radius:50%;font-size:15px}
+.play{width:52px;height:52px;padding:0;border:0;border-radius:50%;font-size:17px;flex:none}
 .sg{display:block;width:100%;text-align:left;border-radius:var(--rk);margin-top:6px;font-weight:550}
 .seg{display:flex;gap:4px;background:var(--in);border:1px solid var(--ln);border-radius:16px;padding:4px}
 .seg button{flex:1;background:transparent;color:var(--mu);border:0;border-radius:12px}.seg button.on{background:var(--acc);color:var(--on)}
@@ -58,7 +58,6 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
 @media (hover:hover){
  button:hover{background:var(--acc2)}
  .soft:hover,.feel button:not(.on):hover,.set button:hover{background:var(--soft);border-color:var(--ln2)}
- .soft.play:hover{background:var(--acc2)}
  .danger:hover{background:rgba(240,86,74,.2)}
  .tile:hover{background:var(--pan);border-color:var(--ln2)}
  .seg button:not(.on):hover,nav.sub button:not(.on):hover{background:var(--soft);color:var(--tx)}
@@ -112,6 +111,48 @@ small:has(+.bar){display:block;margin-top:10px}
 .toast .bar{margin:6px 0 0;background:rgba(255,255,255,.12)}.toast .bar i{background:var(--ring)}
 .toast.done{background:var(--grn);border-color:transparent;color:#06140D}.toast.done button{background:rgba(0,0,0,.16);color:#06140D}
 
+/* ===== Composition des écrans ===== */
+.ph{margin:8px 2px 18px}.ph h1{font-size:32px;margin:0}.ph .eye{display:block;color:var(--acc);font-weight:700;font-size:13px;letter-spacing:.02em;margin-bottom:2px}
+.ph.home .eye{color:var(--mu);font-weight:600}.ph.home .eye::first-letter{text-transform:uppercase}
+h2.sec{font-size:18px;margin:26px 2px 12px}
+.split>div>:first-child{margin-top:0}
+.qa{margin:12px 0 0}.qa button{min-height:52px;font-size:16px}
+button.big{min-height:56px;font-size:16px;font-weight:700;border-radius:18px;margin:0 0 12px}
+.ghost{background:transparent;color:var(--mu);border-color:var(--ln);margin-top:4px}
+.sm{min-height:44px;padding:8px 14px;font-size:14px}
+.ico-b{width:44px;padding:0;flex:none}
+.sessl{display:grid;gap:10px;margin-bottom:12px}
+.sess{display:flex;align-items:center;gap:14px;background:var(--pan);border:1px solid var(--ln);border-radius:22px;padding:14px 14px 14px 18px;box-shadow:var(--sh)}
+.sess b{display:block;font-size:18px;letter-spacing:-.01em;overflow-wrap:anywhere}.sess small{display:block}
+.coach .ico{margin-top:2px}
+.sess-h{display:block}.sess-h .bar{background:rgba(255,255,255,.14);margin:12px 0 6px}.sess-h small:has(+.bar){margin-top:2px}
+.ex .exh{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 10px}.ex .exh b{font-size:19px;letter-spacing:-.01em}.ex .exv{margin:8px 0 6px}
+.opts{display:flex;flex-wrap:wrap;column-gap:20px}.opts label.chk{margin:8px 0}
+.blk{background:var(--soft);border:1px solid var(--ln);border-radius:18px;padding:12px;margin-top:12px}.blk input,.blk textarea{background:var(--in)}
+.tin{font-size:18px;font-weight:700}.tin2{font-size:17px;font-weight:700}
+.hh{margin-bottom:4px}
+.list{padding-top:6px;padding-bottom:6px}
+.li{display:flex;gap:12px;align-items:center;padding:12px 0;border-top:1px solid var(--ln)}
+.hh+.li,.mh+.li,.list>.li:first-child{border-top:0}
+.li .lv{margin-top:2px}.li .lt{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex:none}
+.kc{white-space:nowrap}
+.li.fe{display:block}.li.fe .row button{min-height:44px}
+.cq{margin:8px 0}.cq input{width:96px;flex:none}
+.mh{margin-bottom:2px}
+.sum .big{white-space:nowrap;font:800 44px/1 system-ui,-apple-system,sans-serif;letter-spacing:-.03em;margin:8px 0 4px;font-variant-numeric:tabular-nums}
+.sum .big small{font-size:15px;font-weight:600;letter-spacing:0;margin-left:4px}
+.dsel{width:160px}.dsel input{padding:8px 10px;font-size:14px}
+/* Ordinateur : navigation en rail à gauche, deux colonnes pour Accueil, Nutrition et Corps */
+@media (min-width:960px){
+ #app{max-width:none;margin:0;padding:36px 40px 120px 148px}
+ main{max-width:680px;margin:0 auto}main.w{max-width:1100px}
+ .split{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:24px;align-items:start}
+ .split>div>h2.sec:first-child{margin-top:0}
+ nav.tabbar{left:28px;top:50%;bottom:auto;transform:translateY(-50%);width:92px;flex-direction:column;padding:8px;border-radius:28px}
+ nav.tabbar button{min-height:76px;font-size:12px}
+ #float{left:calc(50% + 54px);bottom:24px}
+ .ph h1{font-size:38px}}
+
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}button:active{transform:none}}
 </style></head><body><div id="app"></div><div id="float"><div id="undo" aria-live="polite"></div><div id="rest"></div></div>
 <script>
@@ -162,39 +203,40 @@ function vSeance(){
   if(!S.program.length)return '<div class="card">Aucune séance. Crée-en une dans Programme.</div>';
   const xs=S.program.flatMap(d=>d.exos),up=xs.filter(e=>e.verdict=='up').length,dn=xs.filter(e=>e.verdict=='down').length,l=S.history[S.history.length-1],c=coach(),pz=n=>n>1?'s':'';
   const msg=up?`${up} exercice${pz(up)} en hausse ! Production en progression, on charge.`:dn?`${dn} exercice${pz(dn)} à alléger. On réduit la cadence avant de repartir.`:l?'Cadence stable. On maintient la production.':'Ligne à l\'arrêt. Lance ta première séance.';
-  return `<div class="card row" style="align-items:flex-start;gap:14px"><div class="ico"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg></div><div><small><b>Coach</b></small><div>${msg}</div><small>${esc(c.m)}</small></div></div><p class="sec">Démarrer une séance</p><div class="g2">`+
-   S.program.map((d,i)=>`<div class="card row" style="margin:0"><div style="flex:1"><b>${esc(d.name)}</b><br><small>${d.exos.length} exercice${pz(d.exos.length)}</small></div><button class="soft play" data-a="start" data-d="${i}" aria-label="Démarrer ${esc(d.name)}">▶</button></div>`).join('')+'</div>';
+  return `<div class="card row coach" style="align-items:flex-start;gap:14px"><div class="ico"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg></div><div><small><b>Coach</b></small><div>${msg}</div><small>${esc(c.m)}</small></div></div><h2 class="sec">Démarrer une séance</h2>`+sessList();
  }
  const d=S.program.find(x=>x.id==S.draft.day);if(!d){S.draft=null;return vSeance()}
- let h=`<div class="card"><b>${esc(d.name)}</b> <small>en cours. Coche chaque série faite pour lancer le repos.</small></div>`,todo=0;
+ let h='',todo=0,tot=0;
  d.exos.forEach(e=>{
   let D=S.draft.x[e.id];
   if(!D){const p=prev(e);D=S.draft.x[e.id]={c:e.charge,cs:e.cs?e.cs.slice():null,r:(e.verdict=='keep'&&p)?p.r.slice():[],ok:[],pain:false,feel:0}}
   D.ok=D.ok||[];while(D.r.length<e.sets)D.r.push(e.min);D.r.length=e.sets;D.ok.length=e.sets;
   if(D.cs){while(D.cs.length<e.sets)D.cs.push(D.cs.length?D.cs[D.cs.length-1]:D.c);D.cs.length=e.sets}
-  for(let i=0;i<e.sets;i++)if(!D.ok[i])todo++;
-  h+=`<div class="card"><b>${esc(e.name)}</b> <small>${e.sets}×${e.min}-${e.max}${e.rest>0?', repos '+e.rest+' s':''}</small><div>${lamp(e)}</div>`+
+  tot+=e.sets;for(let i=0;i<e.sets;i++)if(!D.ok[i])todo++;
+  h+=`<div class="card ex"><div class="exh"><b>${esc(e.name)}</b><small>${e.sets}×${e.min}-${e.max}${e.rest>0?', repos '+e.rest+' s':''}</small></div><div class="exv">${lamp(e)}</div>`+
   (e.tip?`<details><summary>Comment faire</summary>${esc(e.tip)}</details>`:'')+
   (D.cs?'<small>Charge (kg) puis répétitions, série par série</small>':`<label><small>Charge (kg)</small><input type="number" step="any" inputmode="decimal" data-k="c" data-x="${e.id}" value="${D.c}"></label>`)+
   D.r.map((v,i)=>`<div class="set${D.ok[i]?' ok':''}"><b>S${i+1}</b>${D.cs?`<input class="kg" type="number" step="any" inputmode="decimal" aria-label="Charge de la série ${i+1} en kg" data-k="cs" data-x="${e.id}" data-i="${i}" value="${D.cs[i]}">`:''}<button data-a="dec" data-x="${e.id}" data-i="${i}">−</button><input type="number" inputmode="numeric" data-k="r" data-x="${e.id}" data-i="${i}" value="${v}"><button data-a="inc" data-x="${e.id}" data-i="${i}">+</button><input type="checkbox" aria-label="Série ${i+1} faite" data-k="ok" data-x="${e.id}" data-i="${i}" ${D.ok[i]?'checked':''}></div>`).join('')+
-  `<label class="chk"><input type="checkbox" data-k="multi" data-x="${e.id}" ${D.cs?'checked':''}>Charge différente par série</label>`+
-  `<label class="chk"><input type="checkbox" data-k="pain" data-x="${e.id}" ${D.pain?'checked':''}>Douleur articulaire</label>`+
+  `<div class="opts"><label class="chk"><input type="checkbox" data-k="multi" data-x="${e.id}" ${D.cs?'checked':''}>Charge différente par série</label>`+
+  `<label class="chk"><input type="checkbox" data-k="pain" data-x="${e.id}" ${D.pain?'checked':''}>Douleur articulaire</label></div>`+
   `<small>Sensation : 1 dur, 5 top</small><div class="row feel">${[1,2,3,4,5].map(n=>`<button data-a="feel" data-x="${e.id}" data-i="${n}" class="${D.feel==n?'on':''}">${n}</button>`).join('')}</div></div>`;
  });
- return h+`<div class="card"><textarea rows="2" data-k="note" placeholder="Notes de séance">${esc(S.draft.note||'')}</textarea></div>${todo?`<p><small>${todo>1?todo+' séries non cochées : elles seront enregistrées telles quelles':'1 série non cochée : elle sera enregistrée telle quelle'}.</small></p>`:''}<button class="full" data-a="finish">✔ Terminer la séance</button><p><button class="soft" data-a="cancel">Annuler la séance</button></p>`;
+ const dn=tot-todo;
+ return `<div class="hero sess-h"><div style="flex:1;min-width:0"><small>Séance en cours</small><b style="display:block;font-size:24px;letter-spacing:-.02em;margin:2px 0 4px">${esc(d.name)}</b><small>Coche chaque série faite pour lancer le repos.</small><div class="bar"><i style="width:${tot?dn/tot*100:0}%;background:var(--ring)"></i></div><small>${dn} série${dn>1?'s':''} cochée${dn>1?'s':''} sur ${tot}</small></div></div>`+
+ h+`<div class="card"><textarea rows="2" data-k="note" placeholder="Notes de séance">${esc(S.draft.note||'')}</textarea></div>${todo?`<p><small>${todo>1?todo+' séries non cochées : elles seront enregistrées telles quelles':'1 série non cochée : elle sera enregistrée telle quelle'}.</small></p>`:''}<button class="full big" data-a="finish">✔ Terminer la séance</button><button class="full ghost" data-a="cancel">Annuler la séance</button>`;
 }
 function vProg(){
  const F=[['sets','Séries'],['min','Rép min'],['max','Rép max'],['charge','Charge'],['step','Palier'],['rest','Repos (s)']];
- return S.program.map((d,i)=>`<div class="card"><small>Nom de la séance</small><div class="row" style="margin-top:4px"><input data-k="dn" placeholder="Ex. Haut du corps" data-d="${i}" value="${esc(d.name)}"><button class="danger" data-a="delday" data-d="${i}" aria-label="Supprimer la séance">✕</button></div>`+
-  d.exos.map((e,j)=>`<hr><input data-k="ef" data-f="name" data-d="${i}" data-e="${j}" value="${esc(e.name)}"><div class="grid">${F.map(f=>`<label><small>${f[1]}</small><input type="number" step="any" inputmode="decimal" data-k="ef" data-f="${f[0]}" data-d="${i}" data-e="${j}" value="${e[f[0]]}"></label>`).join('')}</div><textarea rows="2" data-k="ef" data-f="tip" data-d="${i}" data-e="${j}" placeholder="Consignes d'exécution">${esc(e.tip)}</textarea><p><button class="soft" data-a="delexo" data-d="${i}" data-e="${j}">Supprimer l'exercice</button></p>`).join('')+
-  `<p><button data-a="addexo" data-d="${i}">+ Exercice</button></p></div>`).join('')+'<button class="full" data-a="addday">+ Nouvelle séance</button>';
+ return S.program.map((d,i)=>`<div class="card"><div class="row" style="align-items:flex-end"><label style="flex:1;min-width:0"><small>Nom de la séance</small><input class="tin" data-k="dn" placeholder="Ex. Haut du corps" data-d="${i}" value="${esc(d.name)}"></label><button class="danger ico-b" data-a="delday" data-d="${i}" aria-label="Supprimer la séance">✕</button></div>`+
+  d.exos.map((e,j)=>`<div class="blk"><input class="tin2" data-k="ef" data-f="name" data-d="${i}" data-e="${j}" value="${esc(e.name)}" aria-label="Nom de l'exercice"><div class="grid">${F.map(f=>`<label><small>${f[1]}</small><input type="number" step="any" inputmode="decimal" data-k="ef" data-f="${f[0]}" data-d="${i}" data-e="${j}" value="${e[f[0]]}"></label>`).join('')}</div><textarea rows="2" data-k="ef" data-f="tip" data-d="${i}" data-e="${j}" placeholder="Consignes d'exécution">${esc(e.tip)}</textarea><button class="soft sm" style="margin-top:8px" data-a="delexo" data-d="${i}" data-e="${j}">Supprimer l'exercice</button></div>`).join('')+
+  `<button class="soft full" style="margin-top:12px" data-a="addexo" data-d="${i}">+ Exercice</button></div>`).join('')+'<button class="full big" data-a="addday">+ Nouvelle séance</button>';
 }
 function vHist(){
  if(!S.history.length)return '<div class="card">Aucune séance pour l\'instant. Termine ta première séance pour la retrouver ici.</div>';
  const M=marks();
- return S.history.map((h,i)=>({h,i})).reverse().map(({h,i})=>`<div class="card"><b>${esc(h.day)}</b> <small>${fd(h.t)}</small>`+
-  h.exos.map((e,j)=>`<div>${esc(e.n)} :${e.cs?`<b>${e.cs.map((c,i)=>c+'×'+e.r[i]).join(' / ')}</b> <small>kg×rép.</small>`:`<b>${e.c} kg</b> × ${e.r.join('/')}`} <span class="lamp ${V[e.v][1]}">${V[e.v][0]}</span>${M.has(i+':'+j)?' <span class="lamp rec">RECORD</span>':''}${e.pain?' ⚠':''}</div>`).join('')+
-  (h.note?`<div><small>${esc(h.note)}</small></div>`:'')+`<p><button class="soft" data-a="delh" data-i="${i}">Supprimer</button></p></div>`).join('');
+ return S.history.map((h,i)=>({h,i})).reverse().map(({h,i})=>`<div class="card"><div class="row hh"><b style="flex:1;min-width:0">${esc(h.day)}</b><small>${fd(h.t)}</small></div>`+
+  h.exos.map((e,j)=>`<div class="li"><div style="flex:1;min-width:0">${esc(e.n)}<div class="lv">${e.cs?`<b>${e.cs.map((c,i)=>c+'×'+e.r[i]).join(' / ')}</b> <small>kg×rép.</small>`:`<b>${e.c} kg</b> × ${e.r.join('/')}`}${e.pain?' ⚠':''}</div></div><div class="lt"><span class="lamp ${V[e.v][1]}">${V[e.v][0]}</span>${M.has(i+':'+j)?'<span class="lamp rec">RECORD</span>':''}</div></div>`).join('')+
+  (h.note?`<p style="margin:10px 0 0"><small>${esc(h.note)}</small></p>`:'')+`<button class="soft sm" style="margin-top:12px" data-a="delh" data-i="${i}">Supprimer</button></div>`).join('');
 }
 const orm=o=>o.cs?Math.max(...o.cs.map((c,i)=>o.r[i]>0?c*(1+o.r[i]/30):0)):Math.max(...o.r)>0?o.c*(1+Math.max(...o.r)/30):0,n1=x=>(Math.round(x*10)/10).toString().replace('.',',');
 function marks(){const best={},m=new Set();S.history.forEach((h,i)=>h.exos.forEach((o,j)=>{const k=o.id||o.n,v=orm(o);if(best[k]!=null&&v>best[k]+1e-9)m.add(i+':'+j);best[k]=Math.max(best[k]||0,v)}));return m}
@@ -255,7 +297,7 @@ function trendCard(){
 function sugHtml(v){const q=norm(v);if(!q)return '';
  return S.lib.map((x,i)=>({x,i,s:norm(x.n)})).filter(o=>o.s.includes(q)).sort((a,b)=>(b.s.startsWith(q)-a.s.startsWith(q))||b.x.u-a.x.u).slice(0,6).map(({x,i})=>`<button class="soft sg" data-a="sug" data-i="${i}">${esc(x.n)} <small>${Math.round(x.k)} kcal, P ${n1(x.p)}, G ${n1(x.g)}, L ${n1(x.l)}</small></button>`).join('')}
 function libHtml(){const q=norm(LQ),xs=S.lib.map((x,i)=>({x,i})).filter(o=>!q||norm(o.x.n).includes(q)).sort((a,b)=>b.x.u-a.x.u);
- return (xs.length?'':'<div class="card">Aucun aliment trouvé.</div>')+xs.slice(0,60).map(({x,i})=>`<div class="card row"><div style="flex:1"><b>${esc(x.n)}</b><br><small>${Math.round(x.k)} kcal, P ${n1(x.p)}, G ${n1(x.g)}, L ${n1(x.l)} pour 100 g ou 1 portion. Utilisé ${x.u} fois.</small></div><button class="danger" data-a="dellib" data-i="${i}" aria-label="Retirer ${esc(x.n)}">✕</button></div>`).join('')+(xs.length>60?`<p><small>Et ${xs.length-60} autres : utilise la recherche.</small></p>`:'')}
+ return (xs.length?'':'<p style="margin:0"><small>Aucun aliment trouvé.</small></p>')+xs.slice(0,60).map(({x,i})=>`<div class="li"><div style="flex:1;min-width:0"><b>${esc(x.n)}</b><br><small>${Math.round(x.k)} kcal, P ${n1(x.p)}, G ${n1(x.g)}, L ${n1(x.l)} pour 100 g ou 1 portion. Utilisé ${x.u} fois.</small></div><button class="danger ico-b" data-a="dellib" data-i="${i}" aria-label="Retirer ${esc(x.n)}">✕</button></div>`).join('')+(xs.length>60?`<p style="margin:12px 0 0"><small>Et ${xs.length-60} autres : utilise la recherche.</small></p>`:'')}
 const restLine=(k,p,pl,today)=>{const rk=Math.round(pl.k-k),rp=Math.round(pl.P-p),pr=rp>0?`${rp} g de protéines`:'';
  return `<p style="margin:8px 0 0"><b>${rk>=0?`${today?'Il te reste':'Il restait'} ${rk} kcal${pr?' et '+pr:''}.`:`${-rk} kcal au-dessus de la cible${pr?', il manque encore '+pr:''}.`}</b>${pr?'':' <small>Protéines atteintes.</small>'}</p>`};
 function tplCard(){
@@ -264,7 +306,7 @@ function bkCard(){
  if(!S.history.length&&!Object.keys(S.food).length&&!S.weights.length)return '';
  const d=S.lastExp?Math.floor((Date.now()-S.lastExp)/864e5):null;if(d!==null&&d<7)return '';
  return `<div class="card row" style="gap:12px"><span class="lamp y" style="flex:none">SAUVEGARDE</span><small style="flex:1">${d===null?'Aucune sauvegarde de tes données pour l\'instant.':`Dernière sauvegarde il y a ${d} jours.`}</small><button data-a="tab" data-t="data">Sauvegarder</button></div>`}
-function vLib(){return (S.tpl.length?'<div class="card"><b>Repas types</b>'+S.tpl.map((o,i)=>`<hr><div class="row"><input data-k="tpn" data-i="${i}" value="${esc(o.n)}" aria-label="Nom du repas type"><button class="danger" data-a="deltpl" data-i="${i}" aria-label="Supprimer le repas type">✕</button></div><small>${o.m} : ${o.items.map(x=>esc(x.n)+' ×'+(x.q||1)).join(', ')}. ${Math.round(o.items.reduce((a,x)=>a+x.k*(x.q||1),0))} kcal.</small>`).join('')+'</div>':'')+`<div class="card"><b>${S.lib.length} aliment${S.lib.length>1?'s':''} en bibliothèque</b><p><small>Chaque aliment ajouté dans Jour est mémorisé ici avec ses dernières valeurs, et proposé dès que tu tapes son nom. Pour corriger un aliment, ajoute-le une fois avec les bonnes valeurs.</small></p><input id="lq" placeholder="Rechercher un aliment" autocomplete="off" value="${esc(LQ)}"></div><div id="lib">${libHtml()}</div>`}
+function vLib(){return (S.tpl.length?'<div class="card"><b>Repas types</b>'+S.tpl.map((o,i)=>`<hr><div class="row"><input data-k="tpn" data-i="${i}" value="${esc(o.n)}" aria-label="Nom du repas type"><button class="danger ico-b" data-a="deltpl" data-i="${i}" aria-label="Supprimer le repas type">✕</button></div><small>${o.m} : ${o.items.map(x=>esc(x.n)+' ×'+(x.q||1)).join(', ')}. ${Math.round(o.items.reduce((a,x)=>a+x.k*(x.q||1),0))} kcal.</small>`).join('')+'</div>':'')+`<div class="card"><b>${S.lib.length} aliment${S.lib.length>1?'s':''} en bibliothèque</b><p><small>Chaque aliment ajouté dans Jour est mémorisé ici avec ses dernières valeurs, et proposé dès que tu tapes son nom. Pour corriger un aliment, ajoute-le une fois avec les bonnes valeurs.</small></p><input id="lq" placeholder="Rechercher un aliment" autocomplete="off" value="${esc(LQ)}"></div><div id="lib" class="card list">${libHtml()}</div>`}
 let DM='';
 // Données de l'utilisateur (sauvegarde fichier et synchro en ligne) : tout sauf l'état propre à l'appareil (onglet, séance en cours, minuteur)
 function payload(){return{program:S.program,history:S.history,profile:S.profile,weights:S.weights,food:S.food,favs:S.favs,tpl:S.tpl,adj:S.adj||0,adjT:S.adjT||0,lib:S.lib,cost:S.cost,theme:S.theme||'light',sound:S.sound!==false}}
@@ -319,45 +361,48 @@ function chart(){const w=S.weights.slice(-60);if(w.length<2)return '<small>Le gr
  return `<svg viewBox="0 0 320 120" width="100%" role="img" aria-label="Évolution du poids">`+w.map(p=>`<circle cx="${X(p.t)}" cy="${Y(p.w)}" r="3" style="fill:var(--mu)"/>`).join('')+`<polyline fill="none" style="stroke:var(--acc)" stroke-width="3" points="${w.map((p,i)=>X(p.t)+','+Y(sm[i])).join(' ')}"/></svg><small>Points : pesées. Ligne : tendance lissée sur 2 semaines, ${sm[sm.length-1].toFixed(1)} kg.</small>`}
 function vCorps(){const p=S.profile,c=coach(),n=(f,l)=>`<label><small>${l}</small><input type="number" step="any" inputmode="decimal" data-k="pf" data-f="${f}" value="${esc(p[f])}"></label>`,
  o=(v,l,cur)=>`<option value="${v}" ${cur==v?'selected':''}>${l}</option>`,sl=(f,l,os)=>`<label><small>${l}</small><select data-k="pf" data-f="${f}">${os}</select></label>`;
- return `<div class="card"><b>Coach</b><br>${esc(c.m)}${c.d?`<p><button data-a="adj" data-v="${c.d}">Appliquer ${c.d>0?'+':''}${c.d} kcal</button></p>`:''}</div>`+bilanCard()+
- `<div class="card"><b>Poids</b><small>Une pesée par semaine suffit : même jour, mêmes conditions (matin, à jeun).</small><div class="g2" style="margin-top:8px"><input id="wi" type="number" step="0.1" inputmode="decimal" placeholder="Poids (kg)"><input id="wd" type="date" value="${dk()}"></div><p><button class="full" data-a="addw">Enregistrer la pesée</button></p>${chart()}</div>`+
- `<div class="card" id="plan">${planHtml()}</div><div class="card"><b>Profil</b><div class="g2">`+
+ return '<div class="split"><div>'+`<div class="card row coach" style="align-items:flex-start;gap:14px"><div class="ico">${IC_CH}</div><div style="flex:1;min-width:0"><b>Coach</b><div>${esc(c.m)}</div>${c.d?`<button style="margin-top:10px" data-a="adj" data-v="${c.d}">Appliquer ${c.d>0?'+':''}${c.d} kcal</button>`:''}</div></div>`+
+ `<div class="card"><b>Poids</b><p style="margin:4px 0 0"><small>Une pesée par semaine suffit : même jour, mêmes conditions (matin, à jeun).</small></p><div class="g2" style="margin-top:10px"><input id="wi" type="number" step="0.1" inputmode="decimal" placeholder="Poids (kg)"><input id="wd" type="date" value="${dk()}"></div><button class="full" style="margin:10px 0 12px" data-a="addw">Enregistrer la pesée</button>${chart()}</div>`+
+ `<div class="card" id="plan">${planHtml()}</div>`+'</div><div>'+bilanCard()+`<div class="card"><b>Profil</b><div class="g2" style="margin-top:8px">`+
  `<label><small>Prénom</small><input data-k="pf" data-f="name" value="${esc(p.name||'')}"></label>`+sl('sex','Sexe',o('m','Homme',p.sex)+o('f','Femme',p.sex))+n('age','Âge')+n('h','Taille (cm)')+n('ses','Séances par semaine')+
  sl('act','Activité quotidienne',o(1.2,'Assis (bureau)',p.act)+o(1.35,'Debout, mobile',p.act)+o(1.5,'Physique',p.act))+
- sl('goal','Objectif',o('cut','Sèche',p.goal)+o('keep','Maintien',p.goal)+o('gain','Prise',p.goal))+n('rate','Rythme (kg/sem)')+n('neck','Tour de cou (cm)')+n('waist','Tour de taille (cm)')+n('hip','Hanches (femme, cm)')+`</div></div>`}
+ sl('goal','Objectif',o('cut','Sèche',p.goal)+o('keep','Maintien',p.goal)+o('gain','Prise',p.goal))+n('rate','Rythme (kg/sem)')+n('neck','Tour de cou (cm)')+n('waist','Tour de taille (cm)')+n('hip','Hanches (femme, cm)')+`</div></div>`+'</div></div>'}
 const bar=(l,v,t)=>`<small>${l} ${Math.round(v)}${t?' / '+t:''}</small><div class="bar"><i style="width:${t?Math.min(100,v/t*100):0}%;background:${t&&v>t*1.05?'var(--red)':'var(--grn)'}"></i></div>`;
 const MEALS=['Petit-déjeuner','Déjeuner','Collation','Dîner','Autre'];let FM='',CD='',CM='all',NM='';
 const prevDay=d=>new Date(new Date(d+'T12:00').getTime()-864e5).toLocaleDateString('sv');
 function vNutri(){const pl=plan(),f=S.food[ND]||[],q=x=>x.q||1,s=k=>f.reduce((a,x)=>a+x[k]*q(x),0),inp=(id,ph)=>`<input id="${id}" type="number" step="any" inputmode="decimal" placeholder="${ph}">`,h=new Date().getHours(),fm=FM||(h<11?'Petit-déjeuner':h<15?'Déjeuner':h<18?'Collation':'Dîner'),op=(v,l,c)=>`<option value="${v}" ${c==v?'selected':''}>${l}</option>`,cd=CD||prevDay(ND),bt='class="soft" style="flex:1;padding:8px 4px;font-size:13px"',src=(S.food[cd]||[]).map((x,i)=>({x,i})).filter(o=>CM=='all'||(o.x.m||'Autre')==CM);
- return `<div class="card"><label><small>Jour de nutrition</small><input type="date" data-k="nd" value="${ND}"></label></div><div class="card"><b>${ND==dk()?"Aujourd'hui":fnd(ND)}</b>${bar('Calories',s('k'),pl&&pl.k)}${bar('Protéines g',s('p'),pl&&pl.P)}${bar('Glucides g',s('g'),pl&&pl.G)}${bar('Lipides g',s('l'),pl&&pl.L)}${pl?restLine(s('k'),s('p'),pl,ND==dk()):'<small>Renseigne ton profil dans Corps pour voir tes cibles.</small>'}</div>`+
+ const meals=MEALS.map(m=>{const es=f.map((x,i)=>({x,i})).filter(o=>(o.x.m||'Autre')==m);return es.length?`<div class="card"><div class="row mh"><b style="flex:1;min-width:0">${m} <small>${Math.round(es.reduce((a,o)=>a+o.x.k*q(o.x),0))} kcal</small></b><button class="soft sm" data-a="mktpl" data-v="${m}">★ Repas type</button></div>`+es.map(({x,i})=>`<div class="li fe"><div class="row"><b style="flex:1;min-width:0">${esc(x.n)}</b><b class="kc">${Math.round(x.k*q(x))} kcal</b></div><small>P ${Math.round(x.p*q(x))}, G ${Math.round(x.g*q(x))}, L ${Math.round(x.l*q(x))}</small><label class="row cq"><small style="flex:1">Coefficient</small><input type="number" step="any" inputmode="decimal" data-k="ec" data-i="${i}" value="${q(x)}"></label><div class="row"><button ${bt} data-a="dupf" data-i="${i}">Dupliquer</button><button ${bt} data-a="starf" data-i="${i}">★ Favori</button><button ${bt} data-a="delf" data-i="${i}">Supprimer</button></div></div>`).join('')+'</div>':''}).join('');
+ return `<div class="split"><div><div class="card sum"><div class="row" style="align-items:flex-start;flex-wrap:wrap"><div style="flex:1;min-width:190px"><b>${ND==dk()?"Aujourd'hui":fnd(ND)}</b><div class="big">${Math.round(s('k'))}<small>${pl?' / '+pl.k:''} kcal</small></div></div><label class="dsel"><small>Jour de nutrition</small><input type="date" data-k="nd" value="${ND}"></label></div>${bar('Calories',s('k'),pl&&pl.k)}${bar('Protéines g',s('p'),pl&&pl.P)}${bar('Glucides g',s('g'),pl&&pl.G)}${bar('Lipides g',s('l'),pl&&pl.L)}${pl?restLine(s('k'),s('p'),pl,ND==dk()):'<small>Renseigne ton profil dans Corps pour voir tes cibles.</small>'}</div>`+tplCard()+
  `<div class="card"><b>Ajouter</b><select id="fm" data-k="fm" style="margin:8px 0">${MEALS.map(m=>op(m,m,fm)).join('')}</select><input id="fn" placeholder="Aliment (tape les premières lettres)" autocomplete="off"><div id="sug"></div><small>Macros pour 100 g (ou 1 portion), puis le coefficient : 2 pour 200 g.</small><div class="g2" style="margin-top:8px">${inp('fk','kcal /100 g')}${inp('fp','Prot. /100 g')}${inp('fg','Gluc. /100 g')}${inp('fl','Lip. /100 g')}</div><label style="display:block;margin-top:8px"><small>Coefficient</small><input id="fq" type="number" step="any" inputmode="decimal" value="1"></label><p><button class="full" data-a="addf">+ Ajouter</button></p>${AM?`<p><small>${esc(AM)}</small></p>`:''}`+
  (S.favs.length?'<small>Favoris : un tap les ajoute au repas et au coefficient choisis</small>'+S.favs.map((x,i)=>`<div class="row" style="margin-top:6px"><button class="full soft" data-a="favadd" data-i="${i}">${esc(x.n)} (${Math.round(x.k)} kcal /100 g)</button><button class="danger" data-a="delfav" data-i="${i}" aria-label="Retirer le favori">✕</button></div>`).join(''):'')+`</div>`+
- `${tplCard()}<div class="card"><b>Copier depuis un autre jour</b><div class="g2" style="margin-top:8px"><input type="date" data-k="cd" value="${cd}"><select data-k="cm">${op('all','Tous les repas',CM)}${MEALS.map(m=>op(m,m,CM)).join('')}</select></div><p><button class="full" data-a="copy">Tout copier ici</button></p>`+
- (cd==ND?'':(src.length?'<small>Ou un seul aliment :</small>'+src.map(({x,i})=>`<div class="row" style="margin-top:6px"><span style="flex:1">${esc(x.n)} <small>×${q(x)}, ${Math.round(x.k*q(x))} kcal</small></span><button class="soft" style="min-height:44px;padding:6px 14px" data-a="copy1" data-dt="${cd}" data-i="${i}">Copier</button></div>`).join(''):'<small>Aucun aliment à cette date.</small>'))+`<div><small>${esc(NM)}</small></div></div>`+
- MEALS.map(m=>{const es=f.map((x,i)=>({x,i})).filter(o=>(o.x.m||'Autre')==m);return es.length?`<div class="row sec"><span style="flex:1">${m}, ${Math.round(es.reduce((a,o)=>a+o.x.k*q(o.x),0))} kcal</span><button class="soft" style="min-height:44px;padding:4px 12px;font-size:13px" data-a="mktpl" data-v="${m}">★ Repas type</button></div>`+es.map(({x,i})=>`<div class="card"><b>${esc(x.n)}</b> <small>${Math.round(x.k*q(x))} kcal, P ${Math.round(x.p*q(x))}, G ${Math.round(x.g*q(x))}, L ${Math.round(x.l*q(x))}</small><label class="row" style="margin:8px 0"><small style="flex:1">Coefficient</small><input type="number" step="any" inputmode="decimal" data-k="ec" data-i="${i}" value="${q(x)}" style="width:90px"></label><p class="row" style="margin-bottom:0"><button ${bt} data-a="dupf" data-i="${i}">Dupliquer</button><button ${bt} data-a="starf" data-i="${i}">★ Favori</button><button ${bt} data-a="delf" data-i="${i}">Supprimer</button></p></div>`).join(''):''}).join('')}
+ '</div><div>'+(meals?'<h2 class="sec">Repas du jour</h2>'+meals:'')+`<div class="card"><b>Copier depuis un autre jour</b><div class="g2" style="margin-top:8px"><input type="date" data-k="cd" value="${cd}"><select data-k="cm">${op('all','Tous les repas',CM)}${MEALS.map(m=>op(m,m,CM)).join('')}</select></div><p><button class="full soft" data-a="copy">Tout copier ici</button></p>`+
+ (cd==ND?'':(src.length?'<small>Ou un seul aliment :</small>'+src.map(({x,i})=>`<div class="row" style="margin-top:6px"><span style="flex:1">${esc(x.n)} <small>×${q(x)}, ${Math.round(x.k*q(x))} kcal</small></span><button class="soft" style="min-height:44px;padding:6px 14px" data-a="copy1" data-dt="${cd}" data-i="${i}">Copier</button></div>`).join(''):'<small>Aucun aliment à cette date.</small>'))+`<div><small>${esc(NM)}</small></div></div>`+'</div></div>'}
 function vNHist(){const pl=plan(),ds=Object.keys(S.food).filter(d=>S.food[d].length).sort().reverse();
  if(!ds.length)return '<div class="card">Aucun jour enregistré. Ajoute des repas dans l\'onglet Jour.</div>';
  const tot=d=>['k','p','g','l'].map(k=>S.food[d].reduce((a,x)=>a+x[k]*(x.q||1),0)),last=ds.slice(0,7).map(tot),av=[0,1,2,3].map(i=>Math.round(last.reduce((a,x)=>a+x[i],0)/last.length));
  return trendCard()+`<div class="card"><b>Moyenne des ${last.length} derniers jours saisis</b><br>${av[0]} kcal, P ${av[1]} g, G ${av[2]} g, L ${av[3]} g${pl?`<br><small>Cible actuelle : ${pl.k} kcal</small>`:''}</div>`+
- (NALL?ds:ds.slice(0,14)).map(d=>{const t=tot(d),st=!pl?'':t[0]>pl.k*1.05?['r','AU-DESSUS']:t[0]<pl.k*.9?['y','EN DESSOUS']:['g','DANS LA CIBLE'];
- return `<div class="card"><div class="row"><b style="flex:1">${fnd(d)}</b><button class="soft" data-a="opend" data-dt="${d}">Ouvrir</button></div><b>${Math.round(t[0])} kcal</b> ${st?`<span class="lamp ${st[0]}">${st[1]}</span>`:''}<br><small>P ${Math.round(t[1])} g, G ${Math.round(t[2])} g, L ${Math.round(t[3])} g, ${S.food[d].length} entrée${S.food[d].length>1?'s':''}</small></div>`}).join('')+(ds.length>14&&!NALL?`<button class="full soft" data-a="nall">Afficher les ${ds.length} jours</button>`:'')}
+ '<h2 class="sec">Jours saisis</h2><div class="card list">'+(NALL?ds:ds.slice(0,14)).map(d=>{const t=tot(d),st=!pl?'':t[0]>pl.k*1.05?['r','AU-DESSUS']:t[0]<pl.k*.9?['y','EN DESSOUS']:['g','DANS LA CIBLE'];
+ return `<div class="li"><div style="flex:1;min-width:0"><b>${fnd(d)}</b><div class="lv"><b class="kc">${Math.round(t[0])} kcal</b> ${st?`<span class="lamp ${st[0]}">${st[1]}</span>`:''}</div><small>P ${Math.round(t[1])} g, G ${Math.round(t[2])} g, L ${Math.round(t[3])} g, ${S.food[d].length} entrée${S.food[d].length>1?'s':''}</small></div><button class="soft sm" data-a="opend" data-dt="${d}">Ouvrir</button></div>`}).join('')+'</div>'+(ds.length>14&&!NALL?`<button class="full soft" data-a="nall">Afficher les ${ds.length} jours</button>`:'')}
 const IC_CH='<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>';
 function chefCard(){const xs=S.program.flatMap(d=>d.exos),up=xs.filter(e=>e.verdict=='up').length,dn=xs.filter(e=>e.verdict=='down').length,c=coach(),z=n=>n>1?'s':'',
  m=up?`${up} exercice${z(up)} en hausse ! Production en progression, on charge.`:dn?`${dn} exercice${z(dn)} à alléger. On réduit la cadence avant de repartir.`:S.history.length?'Cadence stable. On maintient la production.':'Ligne à l\'arrêt. Lance ta première séance.';
- return `<div class="card row" style="align-items:flex-start;gap:14px"><div class="ico">${IC_CH}</div><div><small><b>Coach</b></small><div>${m}</div><small>${esc(c.m)}</small></div></div>`}
+ return `<div class="card row coach" style="align-items:flex-start;gap:14px"><div class="ico">${IC_CH}</div><div><small><b>Coach</b></small><div>${m}</div><small>${esc(c.m)}</small></div></div>`}
 function vHome(){
  const p=S.profile,pl=plan(),f=S.food[dk()]||[],sm=k=>f.reduce((a,x)=>a+x[k]*(x.q||1),0),wk=Date.now()-7*864e5,tr=trend(),
  ses=S.history.filter(h=>h.t>wk).length,
  tk=[['Séance du jour',S.history.some(h=>new Date(h.t).toLocaleDateString('sv')==dk())],['Repas saisis',f.length>0],['Calories dans la cible',!!pl&&sm('k')>=pl.k*.9&&sm('k')<=pl.k*1.05],['Pesée de la semaine',S.weights.some(w=>w.t>wk)]],
  done=tk.filter(x=>x[1]).length,pc=done*25,C=2*Math.PI*30,
  tl=(l,n,sub,t)=>`<button class="tile" data-a="tab" data-t="${t}"><small>${l}</small><div class="n">${n}</div><small>${sub}</small></button>`;
- return `<div style="margin:6px 0 14px"><small>${new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})}</small><div style="font:800 28px/1.15 system-ui,-apple-system,sans-serif;letter-spacing:-.02em">Bonjour${p.name?', '+esc(p.name):''}</div></div>`+
- syncAlert()+bkCard()+`<div class="hero"><div style="flex:1"><b style="font-size:20px">Plan du jour</b><small>${done}/4 complet</small><div style="margin-top:8px">${tk.map(x=>`<small>${x[1]?'✔':'○'} ${x[0]}</small>`).join('')}</div></div><svg viewBox="0 0 80 80" width="88" height="88" role="img" aria-label="${pc} % complet"><circle cx="40" cy="40" r="30" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="9"/><circle cx="40" cy="40" r="30" fill="none" style="stroke:var(--ring)" stroke-width="9" stroke-linecap="round" stroke-dasharray="${C*pc/100} ${C}" transform="rotate(-90 40 40)"/><text x="40" y="45" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">${pc}%</text></svg></div>`+
- `<div class="tiles">${tl('Calories',Math.round(sm('k')),pl?(sm('k')<=pl.k?'reste '+Math.round(pl.k-sm('k'))+' sur '+pl.k:Math.round(sm('k')-pl.k)+' au-dessus de '+pl.k):'kcal aujourd\'hui','nutri')}${tl('Protéines',Math.round(sm('p')),pl?(sm('p')<pl.P?'reste '+Math.round(pl.P-sm('p'))+' g sur '+pl.P:'cible de '+pl.P+' g atteinte'):'g aujourd\'hui','nutri')}${tl('Poids',lastW()?lastW().toFixed(1):'—',tr!==null?(tr>0?'+':'')+tr.toFixed(2)+' kg/sem':'kg, tendance après 3 pesées','corps')}${tl('Séances',ses,'sur les 7 derniers jours','hist')}</div>`+
- (S.weights.length&&new Date(S.weights[S.weights.length-1].t).toLocaleDateString('sv')==dk()?bilanCard():'')+chefCard()+(S.draft?'<div class="card"><button class="full" data-a="tab" data-t="seance">Reprendre la séance en cours</button></div>':'')+
- '<p class="sec">Démarrer une séance</p>'+S.program.map((d,i)=>`<div class="card row" style="margin-bottom:10px"><div style="flex:1"><b>${esc(d.name)}</b><br><small>${d.exos.length} exercice${d.exos.length>1?'s':''}</small></div><button class="soft play" data-a="start" data-d="${i}" aria-label="Démarrer ${esc(d.name)}">▶</button></div>`).join('')+
- '<div class="g2" style="margin-top:14px"><button class="soft" data-a="tab" data-t="nutri">+ Repas</button><button class="soft" data-a="tab" data-t="corps">+ Pesée</button></div>';
+ return `<header class="ph home"><small class="eye">${new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})}</small><h1>Bonjour${p.name?', '+esc(p.name):''}</h1></header>`+
+ syncAlert()+bkCard()+'<div class="split"><div>'+
+ `<div class="hero"><div style="flex:1"><b style="font-size:22px">Plan du jour</b><small>${done}/4 complet</small><div style="margin-top:10px">${tk.map(x=>`<small>${x[1]?'✔':'○'} ${x[0]}</small>`).join('')}</div></div><svg viewBox="0 0 80 80" width="100" height="100" role="img" aria-label="${pc} % complet"><circle cx="40" cy="40" r="30" fill="none" stroke="rgba(255,255,255,.14)" stroke-width="9"/><circle cx="40" cy="40" r="30" fill="none" style="stroke:var(--ring)" stroke-width="9" stroke-linecap="round" stroke-dasharray="${C*pc/100} ${C}" transform="rotate(-90 40 40)"/><text x="40" y="45" text-anchor="middle" fill="#fff" font-size="16" font-weight="800">${pc}%</text></svg></div>`+
+ (S.draft?'<button class="full big" data-a="tab" data-t="seance">Reprendre la séance en cours</button>':'')+
+ '<div class="g2 qa"><button class="soft" data-a="tab" data-t="nutri">+ Repas</button><button class="soft" data-a="tab" data-t="corps">+ Pesée</button></div>'+
+ '<h2 class="sec">Démarrer une séance</h2>'+sessList()+'</div><div>'+
+ `<h2 class="sec">Aujourd'hui</h2><div class="tiles">${tl('Calories',Math.round(sm('k')),pl?(sm('k')<=pl.k?'reste '+Math.round(pl.k-sm('k'))+' sur '+pl.k:Math.round(sm('k')-pl.k)+' au-dessus de '+pl.k):'kcal aujourd\'hui','nutri')}${tl('Protéines',Math.round(sm('p')),pl?(sm('p')<pl.P?'reste '+Math.round(pl.P-sm('p'))+' g sur '+pl.P:'cible de '+pl.P+' g atteinte'):'g aujourd\'hui','nutri')}${tl('Poids',lastW()?lastW().toFixed(1):'—',tr!==null?(tr>0?'+':'')+tr.toFixed(2)+' kg/sem':'kg, tendance après 3 pesées','corps')}${tl('Séances',ses,'sur les 7 derniers jours','hist')}</div>`+
+ chefCard()+(S.weights.length&&new Date(S.weights[S.weights.length-1].t).toLocaleDateString('sv')==dk()?bilanCard():'')+'</div></div>';
 }
+function sessList(){return '<div class="sessl">'+S.program.map((d,i)=>`<div class="sess"><div style="flex:1;min-width:0"><b>${esc(d.name)}</b><small>${d.exos.length} exercice${d.exos.length>1?'s':''}</small></div><button class="play" data-a="start" data-d="${i}" aria-label="Démarrer ${esc(d.name)}">▶</button></div>`).join('')+'</div>'}
 function vOpt(){const th=S.theme||'light';return `<div class="card"><b>Apparence</b><p><small>Choisis le thème de l'appli.</small></p><div class="seg"><button data-a="theme" data-v="light" class="${th=='light'?'on':''}">Clair</button><button data-a="theme" data-v="dark" class="${th=='dark'?'on':''}">Sombre</button></div></div>`+
  `<div class="card"><b>Minuteur de repos</b><p><small>Signal sonore à la fin du repos. La durée se règle par exercice dans Entraînement > Programme (0 = pas de minuteur).</small></p><div class="seg"><button data-a="sound" data-v="1" class="${S.sound!==false?'on':''}">Son activé</button><button data-a="sound" data-v="0" class="${S.sound===false?'on':''}">Son coupé</button></div><p><small>Sur iPhone : pas de vibration possible, le son ne passe pas si le bouton silencieux est activé, et l'appli doit rester ouverte à l'écran pendant le repos.</small></p></div>`}
 const PER={semaine:52,mois:12,an:1},CATS=['Salle','Compléments','Autre'],fmt=n=>Math.round(n).toLocaleString('fr-FR');
@@ -368,8 +413,8 @@ function costStats(){const c=S.cost,ses=+S.profile.ses||0,n=ses*c.weeks,tot={};l
  `<div class="card"><b>Dépenses par an</b>${CATS.map(k=>row(k,fmt(tot[k]||0)+' €')).join('')}</div>`+
  `<div class="card"><b>Temps par an</b>${[['Séances',c.dur],['Trajets',c.trip],['Autre (vestiaire, douche)',c.oth]].map(x=>row(x[0],fmt(n*x[1]/60)+' h')).join('')}</div>`}
 function vCost(){const c=S.cost,n=(f,l,v)=>`<label><small>${l}</small><input type="number" step="any" inputmode="decimal" data-k="cf" data-f="${f}" value="${v}"></label>`,o=(v,l,cur)=>`<option value="${v}" ${cur==v?'selected':''}>${l}</option>`;
- return `<div class="card"><b>Dépenses</b>`+c.lines.map((l,i)=>`<hr><input data-k="cl" data-i="${i}" data-f="n" value="${esc(l.n)}"><div class="g3"><input type="number" step="any" inputmode="decimal" data-k="cl" data-i="${i}" data-f="amt" value="${l.amt}" aria-label="Montant en euros"><select data-k="cl" data-i="${i}" data-f="per">${o('semaine','par semaine',l.per)}${o('mois','par mois',l.per)}${o('an','par an',l.per)}</select><select data-k="cl" data-i="${i}" data-f="cat">${CATS.map(k=>o(k,k,l.cat)).join('')}</select></div><button class="soft" data-a="delcl" data-i="${i}">Supprimer</button>`).join('')+`<p><button data-a="addcl">+ Ajouter une dépense</button></p></div>`+
- `<div class="card"><b>Temps</b><div class="g2" style="margin-top:8px">${n('ses','Séances par semaine',S.profile.ses)}${n('weeks','Semaines d\'entraînement par an',c.weeks)}${n('trip','Trajet aller-retour (min)',c.trip)}${n('dur','Durée moyenne d\'une séance (min)',c.dur)}${n('oth','Autre temps par séance (min)',c.oth)}</div></div><p class="sec">Bilan sur l'année</p><div id="cstat">${costStats()}</div>`}
+ return `<h2 class="sec" style="margin-top:4px">Bilan sur l'année</h2><div id="cstat">${costStats()}</div><div class="card"><b>Dépenses</b>`+c.lines.map((l,i)=>`<hr><input data-k="cl" data-i="${i}" data-f="n" value="${esc(l.n)}"><div class="g3"><input type="number" step="any" inputmode="decimal" data-k="cl" data-i="${i}" data-f="amt" value="${l.amt}" aria-label="Montant en euros"><select data-k="cl" data-i="${i}" data-f="per">${o('semaine','par semaine',l.per)}${o('mois','par mois',l.per)}${o('an','par an',l.per)}</select><select data-k="cl" data-i="${i}" data-f="cat">${CATS.map(k=>o(k,k,l.cat)).join('')}</select></div><button class="soft sm" data-a="delcl" data-i="${i}">Supprimer</button>`).join('')+`<button class="soft full" style="margin-top:12px" data-a="addcl">+ Ajouter une dépense</button></div>`+
+ `<div class="card"><b>Temps</b><div class="g2" style="margin-top:8px">${n('ses','Séances par semaine',S.profile.ses)}${n('weeks','Semaines d\'entraînement par an',c.weeks)}${n('trip','Trajet aller-retour (min)',c.trip)}${n('dur','Durée moyenne d\'une séance (min)',c.dur)}${n('oth','Autre temps par séance (min)',c.oth)}</div></div>`}
 const T=[['home','Accueil',vHome],['seance','Séance',vSeance],['prog','Programme',vProg],['hist','Historique',vHist],['stats','Progrès',vStats],['corps','Corps',vCorps],['nutri','Jour',vNutri],['nhist','Historique',vNHist],['lib','Aliments',vLib],['cost','Coût',vCost],['data','Données',vData],['opt','Options',vOpt]];
 const G=[['home','Accueil',['home']],['train','Entraînement',['seance','prog','hist','stats']],['nutri','Nutrition',['nutri','nhist','lib']],['profil','Profil',['corps','cost','data','opt']]];
 const IC={home:'<path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',train:'<path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/>',nutri:'<path d="M12 7c-2-2-6-1-6 4 0 5 3 9 6 9s6-4 6-9c0-5-4-6-6-4z"/><path d="M12 7c0-2 1-3 3-4"/>',profil:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>'};
@@ -377,7 +422,7 @@ function render(){
  const now=dk();if(now!=TD){if(ND==TD)ND=now;TD=now}
  const t=T.find(x=>x[0]==S.tab)||T[0],g=G.find(x=>x[2].includes(t[0]));S.last=S.last||{};S.last[g[0]]=t[0];
  const sub=g[2].length>1?'<nav class="sub">'+g[2].map(id=>`<button data-a="tab" data-t="${id}" class="${id==t[0]?'on':''}">${T.find(x=>x[0]==id)[1]}</button>`).join('')+'</nav>':'';
- $('#app').innerHTML=(t[0]=='home'?'':'<h1>Coach</h1>')+sub+t[2]()+'<nav class="tabbar">'+G.map(x=>`<button data-a="tab" data-t="${x[2].includes(S.last[x[0]])?S.last[x[0]]:x[2][0]}" class="${x==g?'on':''}"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[x[0]]}</svg>${x[1]}</button>`).join('')+'</nav>';
+ $('#app').innerHTML=`<main class="${['home','nutri','corps'].includes(t[0])?'w':''}">`+(t[0]=='home'?'':`<header class="ph"><small class="eye">Coach</small><h1>${g[1]}</h1></header>`)+sub+t[2]()+'</main><nav class="tabbar">'+G.map(x=>`<button data-a="tab" data-t="${x[2].includes(S.last[x[0]])?S.last[x[0]]:x[2][0]}" class="${x==g?'on':''}"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[x[0]]}</svg>${x[1]}</button>`).join('')+'</nav>';
  if(!S.draft)S.rest=null;restTick();
 }
 function finish(){
