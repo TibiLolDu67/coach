@@ -61,7 +61,7 @@ let S=null;try{S=JSON.parse(localStorage.getItem(K))}catch(e){}
 if(!S||!Array.isArray(S.program))S={program:[
  {id:uid(),name:'Séance A',exos:[ex('Développé couché',3,8,12,40,2.5),ex('Rowing barre',3,8,12,40,2.5)]},
  {id:uid(),name:'Séance B',exos:[ex('Squat',3,6,10,60,2.5),ex('Soulevé de terre roumain',3,8,12,60,2.5)]}],history:[],tab:'seance',draft:null};
-const save=()=>{try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}};
+const save=()=>{try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}syncSoon()};
 const norm=s=>String(s==null?'':s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').trim();
 function libAdd(x,a){a=a||S.lib;const n=String(x.n||'').trim(),nn=norm(n);if(!n||n=='Repas')return;const e=a.find(y=>norm(y.n)==nn);if(e){e.k=+x.k||0;e.p=+x.p||0;e.g=+x.g||0;e.l=+x.l||0;e.u++}else a.push({n,k:+x.k||0,p:+x.p||0,g:+x.g||0,l:+x.l||0,u:1})}
 function migrate(){
@@ -203,7 +203,10 @@ function bkCard(){
  return `<div class="card row" style="gap:12px"><span class="lamp y" style="flex:none">SAUVEGARDE</span><small style="flex:1">${d===null?'Aucune sauvegarde de tes données pour l\'instant.':`Dernière sauvegarde il y a ${d} jours.`}</small><button data-a="tab" data-t="data">Sauvegarder</button></div>`}
 function vLib(){return (S.tpl.length?'<div class="card"><b>Repas types</b>'+S.tpl.map((o,i)=>`<hr><div class="row"><input data-k="tpn" data-i="${i}" value="${esc(o.n)}" aria-label="Nom du repas type"><button class="danger" data-a="deltpl" data-i="${i}" aria-label="Supprimer le repas type">✕</button></div><small>${o.m} : ${o.items.map(x=>esc(x.n)+' ×'+(x.q||1)).join(', ')}. ${Math.round(o.items.reduce((a,x)=>a+x.k*(x.q||1),0))} kcal.</small>`).join('')+'</div>':'')+`<div class="card"><b>${S.lib.length} aliment${S.lib.length>1?'s':''} en bibliothèque</b><p><small>Chaque aliment ajouté dans Jour est mémorisé ici avec ses dernières valeurs, et proposé dès que tu tapes son nom. Pour corriger un aliment, ajoute-le une fois avec les bonnes valeurs.</small></p><input id="lq" placeholder="Rechercher un aliment" autocomplete="off" value="${esc(LQ)}"></div><div id="lib">${libHtml()}</div>`}
 let DM='';
-const backupFile=()=>new File([JSON.stringify({program:S.program,history:S.history,profile:S.profile,weights:S.weights,food:S.food,favs:S.favs,tpl:S.tpl,adj:S.adj||0,adjT:S.adjT||0,lib:S.lib,cost:S.cost,theme:S.theme||'light',sound:S.sound!==false})],'coach-sauvegarde-'+dk()+'.json',{type:'application/json'});
+// Données de l'utilisateur (sauvegarde fichier et synchro en ligne) : tout sauf l'état propre à l'appareil (onglet, séance en cours, minuteur)
+function payload(){return{program:S.program,history:S.history,profile:S.profile,weights:S.weights,food:S.food,favs:S.favs,tpl:S.tpl,adj:S.adj||0,adjT:S.adjT||0,lib:S.lib,cost:S.cost,theme:S.theme||'light',sound:S.sound!==false}}
+function setData(o){S.lib=Array.isArray(o.lib)?o.lib:null;S.program=o.program;S.history=o.history;S.profile=o.profile||S.profile;S.weights=o.weights||[];S.food=o.food||{};S.tpl=Array.isArray(o.tpl)?o.tpl:[];S.favs=o.favs||[];S.adj=o.adj||0;S.adjT=o.adjT||0;S.cost=o.cost||S.cost;if(o.theme)S.theme=o.theme;if(o.sound!=null)S.sound=o.sound;migrate()}
+const backupFile=()=>new File([JSON.stringify(payload())],'coach-sauvegarde-'+dk()+'.json',{type:'application/json'});
 const canShareFile=()=>{try{return !!navigator.canShare&&navigator.canShare({files:[backupFile()]})}catch(e){return false}};
 function importData(txt){
  let o;try{o=JSON.parse(txt);if(o.coach!='ajout'&&(!Array.isArray(o.program)||!Array.isArray(o.history)))throw 0}catch(e){return ''}
@@ -216,12 +219,11 @@ function importData(txt){
   (o.weights||[]).forEach(x=>{const w=+x.w;if(w>0&&iso.test(x.d)&&!S.weights.some(q=>new Date(q.t).toLocaleDateString('sv')==x.d)){S.weights.push({t:new Date(x.d+'T08:00').getTime(),w});nw++}});S.weights.sort((a,b)=>a.t-b.t);
   undoable('Ajout importé',back,20000);
   return `Ajout terminé : ${nd} jour${nd>1?'s':''} de repas, ${nw} pesée${nw>1?'s':''}, ${S.lib.length-n0} aliment${S.lib.length-n0>1?'s':''} en bibliothèque. Les jours et pesées déjà saisis dans l'appli n'ont pas été modifiés.`}
- S.lib=Array.isArray(o.lib)?o.lib:null;
- S.program=o.program;S.history=o.history;S.profile=o.profile||S.profile;S.weights=o.weights||[];S.food=o.food||{};S.tpl=Array.isArray(o.tpl)?o.tpl:[];S.favs=o.favs||[];S.adj=o.adj||0;S.adjT=o.adjT||0;S.cost=o.cost||S.cost;if(o.theme)S.theme=o.theme;if(o.sound!=null)S.sound=o.sound;S.draft=null;migrate();
+ S.draft=null;setData(o);
  undoable('Sauvegarde importée',back,20000);return 'Sauvegarde importée.'}
 function vData(){
  const inst=navigator.standalone||matchMedia('(display-mode: standalone)').matches,sh=canShareFile();
- return `<div class="card"><b>Sauvegarde</b><p><small>Tes données restent sur cet appareil. Enregistre régulièrement un fichier de sauvegarde et garde-le ailleurs (Fichiers, iCloud, mail).</small></p>`+
+ return `<div class="card" id="sync">${syncHtml()}</div><div class="card"><b>Sauvegarde</b><p><small>Tes données restent sur cet appareil. Enregistre régulièrement un fichier de sauvegarde et garde-le ailleurs (Fichiers, iCloud, mail).</small></p>`+
  (sh?`<p><button class="full" data-a="share">Partager la sauvegarde</button></p><small>Sur iPhone : Partager, puis « Enregistrer dans Fichiers ».</small>`:'')+
  `<p><button class="full${sh?' soft':''}" data-a="export">Télécharger le fichier .json</button></p><hr><b>Restaurer</b><p><small>Importer une sauvegarde remplace toutes les données actuelles. Un fichier d'ajout (par exemple ton Excel converti) complète tes données sans rien écraser.</small></p><input type="file" id="imf" data-k="imf" hidden><p><button class="full soft" data-a="pick">Importer un fichier</button></p>`+
  `<details><summary>Coller un texte de sauvegarde</summary><textarea id="io" rows="5" placeholder="Texte de sauvegarde"></textarea><p><button class="soft" data-a="import">Importer ce texte</button></p></details><p><small>${S.lastExp?'Dernière sauvegarde : '+fd(S.lastExp):'Aucune sauvegarde faite depuis cet appareil.'}</small></p><small id="msg">${esc(DM)}</small></div>`+
@@ -287,7 +289,7 @@ function vHome(){
  done=tk.filter(x=>x[1]).length,pc=done*25,C=2*Math.PI*30,
  tl=(l,n,sub,t)=>`<button class="tile" data-a="tab" data-t="${t}"><small>${l}</small><div class="n">${n}</div><small>${sub}</small></button>`;
  return `<div style="margin:6px 0 14px"><small>${new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})}</small><div style="font:700 26px system-ui">Bonjour${p.name?', '+esc(p.name):''}</div></div>`+
- bkCard()+`<div class="hero"><div style="flex:1"><b style="font-size:20px">Plan du jour</b><small>${done}/4 complet</small><div style="margin-top:8px">${tk.map(x=>`<small>${x[1]?'✔':'○'} ${x[0]}</small>`).join('')}</div></div><svg viewBox="0 0 80 80" width="88" height="88" role="img" aria-label="${pc} % complet"><circle cx="40" cy="40" r="30" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="9"/><circle cx="40" cy="40" r="30" fill="none" style="stroke:var(--ring)" stroke-width="9" stroke-linecap="round" stroke-dasharray="${C*pc/100} ${C}" transform="rotate(-90 40 40)"/><text x="40" y="45" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">${pc}%</text></svg></div>`+
+ syncAlert()+bkCard()+`<div class="hero"><div style="flex:1"><b style="font-size:20px">Plan du jour</b><small>${done}/4 complet</small><div style="margin-top:8px">${tk.map(x=>`<small>${x[1]?'✔':'○'} ${x[0]}</small>`).join('')}</div></div><svg viewBox="0 0 80 80" width="88" height="88" role="img" aria-label="${pc} % complet"><circle cx="40" cy="40" r="30" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="9"/><circle cx="40" cy="40" r="30" fill="none" style="stroke:var(--ring)" stroke-width="9" stroke-linecap="round" stroke-dasharray="${C*pc/100} ${C}" transform="rotate(-90 40 40)"/><text x="40" y="45" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">${pc}%</text></svg></div>`+
  `<div class="tiles">${tl('Calories',Math.round(sm('k')),pl?(sm('k')<=pl.k?'reste '+Math.round(pl.k-sm('k'))+' sur '+pl.k:Math.round(sm('k')-pl.k)+' au-dessus de '+pl.k):'kcal aujourd\'hui','nutri')}${tl('Protéines',Math.round(sm('p')),pl?(sm('p')<pl.P?'reste '+Math.round(pl.P-sm('p'))+' g sur '+pl.P:'cible de '+pl.P+' g atteinte'):'g aujourd\'hui','nutri')}${tl('Poids',lastW()?lastW().toFixed(1):'—',tr!==null?(tr>0?'+':'')+tr.toFixed(2)+' kg/sem':'kg, tendance après 3 pesées','corps')}${tl('Séances',ses,'sur les 7 derniers jours','hist')}</div>`+
  (S.weights.length&&new Date(S.weights[S.weights.length-1].t).toLocaleDateString('sv')==dk()?bilanCard():'')+chefCard()+(S.draft?'<div class="card"><button class="full" data-a="tab" data-t="seance">Reprendre la séance en cours</button></div>':'')+
  '<p class="sec">Démarrer une séance</p>'+S.program.map((d,i)=>`<div class="card row" style="margin-bottom:10px"><div style="flex:1"><b>${esc(d.name)}</b><br><small>${d.exos.length} exercice${d.exos.length>1?'s':''}</small></div><button class="soft play" data-a="start" data-d="${i}" aria-label="Démarrer ${esc(d.name)}">▶</button></div>`).join('')+
@@ -333,6 +335,13 @@ function finish(){
 document.addEventListener('click',ev=>{
  const b=ev.target.closest('[data-a]');if(!b)return;
  const a=b.dataset.a,x=b.dataset.x,i=+b.dataset.i,d=+b.dataset.d,j=+b.dataset.e,D=S.draft&&S.draft.x[x];
+ if(a=='login'||a=='signup'){const e=$('#sye').value.trim(),p=$('#syp').value;SE=e;if(!e||!p){SM='Indique ton e-mail et un mot de passe.';upd()}else authReq(a,e,p);return}
+ if(a=='reset'){const e=$('#sye').value.trim();SE=e;if(!e){SM='Indique d\'abord ton e-mail.';upd()}else recover(e);return}
+ if(a=='newpw'){newPw($('#syp').value);return}
+ if(a=='syncnow'){syncNow();return}
+ if(a=='logout'){lsSet('pcm1-auth',null);SST='';SC=null;SM='Déconnecté. Tes données restent sur cet appareil.';upd();return}
+ if(a=='keeplocal'||a=='keepremote'){resolveConflict(a);return}
+ if(a=='dlprev'){const v=localStorage.getItem('pcm1-prev');if(v){const f=new File([v],'coach-version-ecartee-'+dk()+'.json',{type:'application/json'}),u=URL.createObjectURL(f),l=document.createElement('a');l.href=u;l.download=f.name;document.body.appendChild(l);l.click();l.remove();setTimeout(()=>URL.revokeObjectURL(u),1000)}return}
  AM='';
  if(a=='pick'){$('#imf').click();return}
  if(a=='share'){try{navigator.share({files:[backupFile()],title:'Sauvegarde Coach'}).then(()=>{S.lastExp=Date.now();save()}).catch(()=>{})}catch(e){}return}
@@ -406,7 +415,100 @@ document.addEventListener('input',ev=>{const t=ev.target;if(t.id=='fn')$('#sug')
  const g=ev.target.closest&&ev.target.closest('#nhs');if(!g)return;
  const s=nser(),r=g.getBoundingClientRect(),t=s[0].t+((ev.clientX-r.left)/r.width*320-36)/262*(s[s.length-1].t-s[0].t);let b=0;
  s.forEach((x,i)=>{if(Math.abs(x.t-t)<Math.abs(s[b].t-t))b=i});if(b!=NX){NX=b;$('#nhc').innerHTML=nchart()}}));
+// ===== Synchronisation en ligne (Supabase) =====
+// Une ligne par compte dans la table coach_state : data = payload(), rev = version. On n'écrase la version en ligne que si
+// elle n'a pas bougé depuis la dernière synchro de cet appareil (filtre rev=eq.) ; sinon l'utilisateur choisit (conflit).
+// Session dans pcm1-auth, suivi de synchro dans pcm1-sync ({rev, h = empreinte des données synchronisées, at}).
+var SB='https://jadbvtbbwlbnbpvtoqzj.supabase.co',SK='sb_publishable_60AfbpyZe8pV1xAjfG3A3g_NrOCRpBc',DEV=/iPhone|iPad/.test(navigator.userAgent)?'iPhone':'PC',
+ SYREADY=false,SYT=null,SYB=false,SYA=false,SST='',SC=null,SM='',SE='',RECOV=null;
+function lsGet(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}}
+function lsSet(k,v){try{if(v==null)localStorage.removeItem(k);else localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+function AU(){return lsGet('pcm1-auth')}
+function SMETA(){return lsGet('pcm1-sync')||{}}
+function hsh(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return(h>>>0).toString(36)+'-'+s.length}
+function dirty(){return hsh(JSON.stringify(payload()))!==SMETA().h}
+function done(rev,p){const m=SMETA();m.rev=rev;if(p)m.h=hsh(p);m.at=Date.now();lsSet('pcm1-sync',m)}
+function keepAuth(j){const o=AU()||{},a={at:j.access_token,rt:j.refresh_token,exp:Date.now()+(j.expires_in||3600)*1000,uid:(j.user&&j.user.id)||o.uid,email:(j.user&&j.user.email)||o.email};lsSet('pcm1-auth',a);return a}
+const fdt=t=>new Date(t).toLocaleString('fr-FR',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+async function post(path,body,tok){let r;try{r=await fetch(SB+path,{method:path.startsWith('/auth/v1/user')?'PUT':'POST',headers:Object.assign({apikey:SK,'Content-Type':'application/json'},tok?{Authorization:'Bearer '+tok}:{}),body:JSON.stringify(body)})}catch(e){return{off:1}}
+ const j=await r.json().catch(()=>({}));return{ok:r.ok,st:r.status,j}}
+async function token(){
+ const a=AU();if(!a)return null;if(a.exp-Date.now()>60000)return a;
+ const r=await post('/auth/v1/token?grant_type=refresh_token',{refresh_token:a.rt});
+ if(r.off)throw{st:'offline'};
+ if(!r.ok){if(r.st<500){lsSet('pcm1-auth',null);SM='Ta session a expiré : reconnecte-toi.';throw{st:'login'}}throw{st:'error'}}
+ return keepAuth(r.j)}
+async function api(path,o){
+ o=o||{};const a=await token();if(!a)throw{st:'login'};let r;
+ try{r=await fetch(SB+path,{method:o.m||'GET',headers:Object.assign({apikey:SK,Authorization:'Bearer '+a.at,'Content-Type':'application/json'},o.h||{}),body:o.b})}catch(e){throw{st:'offline'}}
+ const t=await r.text();let j=null;try{j=t?JSON.parse(t):null}catch(e){}
+ if(r.status==401&&!o.retry){const s=AU();if(s){s.exp=0;lsSet('pcm1-auth',s)}return api(path,Object.assign({},o,{retry:1}))}
+ if(!r.ok)throw{st:r.status==401?'login':'error',code:r.status,j};return j}
+const body=(p,rev)=>`{"data":${p},"rev":${rev},"device":"${DEV}"}`;
+const isEmpty=()=>!S.history.length&&!S.weights.length&&!Object.keys(S.food).some(d=>S.food[d].length);
+function writeLocal(){try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}}
+async function pull(uid){const r=(await api(`/rest/v1/coach_state?select=data,rev&user_id=eq.${uid}`))[0];setData(r.data);writeLocal();done(r.rev,JSON.stringify(payload()));render()}
+function syncSoon(){if(!SYREADY||!AU()||!dirty())return;clearTimeout(SYT);SYT=setTimeout(syncNow,4000);upd()}
+async function syncNow(){
+ if(!SYREADY)return;if(!AU()){setSt('');return}
+ if(SYB){SYA=true;return}SYB=true;clearTimeout(SYT);SYT=null;
+ try{
+  if(navigator.onLine===false)throw{st:'offline'};
+  setSt('busy');const a=await token();if(!a)throw{st:'login'};
+  const m=SMETA(),R=(await api(`/rest/v1/coach_state?select=rev&user_id=eq.${a.uid}`))[0],p=JSON.stringify(payload()),dt=hsh(p)!==m.h;
+  if(!R){await api('/rest/v1/coach_state',{m:'POST',h:{Prefer:'return=minimal'},b:`{"user_id":"${a.uid}",${body(p,1).slice(1)}`});done(1,p)}
+  else if(m.rev==null){if(isEmpty())await pull(a.uid);else return await conflict(a.uid)}
+  else if(R.rev==m.rev){if(dt){const u=await api(`/rest/v1/coach_state?user_id=eq.${a.uid}&rev=eq.${m.rev}&select=rev`,{m:'PATCH',h:{Prefer:'return=representation'},b:body(p,m.rev+1)});if(u&&u.length)done(m.rev+1,p);else SYA=true}else done(m.rev)}
+  else if(dt)return await conflict(a.uid);
+  else await pull(a.uid);
+  setSt('ok')
+ }catch(e){setSt(e&&e.st||'error');if(!e||!e.st)console.warn('synchro',e)}
+ finally{SYB=false;if(SYA){SYA=false;setTimeout(syncNow,300)}}}
+async function conflict(uid){SC=(await api(`/rest/v1/coach_state?select=data,rev,updated_at,device&user_id=eq.${uid}`))[0];setSt('conflict')}
+async function resolveConflict(kind){
+ if(!SC||SYB)return;SYB=true;setSt('busy');
+ try{
+  const a=await token();if(!a)throw{st:'login'};const p=JSON.stringify(payload());
+  if(kind=='keeplocal'){try{localStorage.setItem('pcm1-prev',JSON.stringify(SC.data))}catch(e){}
+   const u=await api(`/rest/v1/coach_state?user_id=eq.${a.uid}&select=rev`,{m:'PATCH',h:{Prefer:'return=representation'},b:body(p,SC.rev+1)});done(u[0].rev,p)}
+  else{try{localStorage.setItem('pcm1-prev',p)}catch(e){}setData(SC.data);writeLocal();done(SC.rev,JSON.stringify(payload()));render()}
+  SC=null;setSt('ok')
+ }catch(e){setSt(e&&e.st||'error')}finally{SYB=false}}
+function upd(){const el=$('#sync');if(el)el.innerHTML=syncHtml()}
+function setSt(s){SST=s;upd();if(S.tab=='home'&&!$('#sync'))render()}
+async function authReq(kind,e,p){
+ SM=kind=='signup'?'Création du compte…':'Connexion…';upd();
+ const r=await post(kind=='signup'?'/auth/v1/signup':'/auth/v1/token?grant_type=password',{email:e,password:p});
+ if(r.off){SM='Pas de réseau : réessaie quand tu es connecté.';return upd()}
+ if(!r.ok){const c=r.j.error_code||'',t=r.j.msg||r.j.error_description||r.j.message||'';
+  SM=c=='invalid_credentials'?'E-mail ou mot de passe incorrect.':c=='email_not_confirmed'?'Confirme d\'abord ton e-mail : clique sur le lien reçu par mail, puis reviens ici.':c=='weak_password'?'Mot de passe trop faible : au moins 6 caractères.':c=='user_already_exists'?'Ce compte existe déjà : touche « Se connecter ».':/rate_limit/.test(c)?'Trop d\'essais ou d\'e-mails : réessaie dans une heure.':'Erreur du serveur : '+(t||r.st);return upd()}
+ if(r.j.access_token){keepAuth(r.j);SM='';upd();syncNow()}
+ else{SM='Compte créé. Ouvre l\'e-mail de confirmation, clique sur le lien, puis reviens ici et touche « Se connecter ».';upd()}}
+async function recover(e){const r=await post('/auth/v1/recover',{email:e});SM=r.off?'Pas de réseau.':r.ok?'Si ce compte existe, un e-mail est parti. Son lien ouvre Coach dans le navigateur pour choisir un nouveau mot de passe.':'Erreur : '+(r.j.msg||r.st);upd()}
+async function newPw(p){if(!p||p.length<6){SM='Au moins 6 caractères.';return upd()}const r=await post('/auth/v1/user',{password:p},RECOV);SM=r.off?'Pas de réseau.':r.ok?'Mot de passe changé. Connecte-toi avec le nouveau, depuis l\'appli.':'Erreur : '+(r.j.msg||r.st);if(r.ok)RECOV=null;upd()}
+function syncHtml(){
+ const a=AU(),m=SMETA(),msg=SM?`<p><small>${esc(SM)}</small></p>`:'',h='<b>Compte et synchronisation</b> ';
+ if(RECOV)return h+`<p><small>Choisis ton nouveau mot de passe.</small></p><input id="syp" type="password" autocomplete="new-password" placeholder="Nouveau mot de passe"><p><button class="full" data-a="newpw">Enregistrer le mot de passe</button></p>`+msg;
+ if(!a)return h+`<p><small>Connecte-toi pour sauvegarder tes données en ligne et retrouver les mêmes sur l'iPhone et le PC.</small></p><input id="sye" type="email" autocomplete="email" placeholder="E-mail" value="${esc(SE)}" style="margin-bottom:8px"><input id="syp" type="password" autocomplete="current-password" placeholder="Mot de passe (6 caractères minimum)"><p class="row"><button style="flex:1" data-a="login">Se connecter</button><button class="soft" style="flex:1" data-a="signup">Créer mon compte</button></p><button class="soft" style="min-height:36px;font-size:13px" data-a="reset">Mot de passe oublié</button>`+msg;
+ const d=SST=='ok'&&dirty(),st=SST=='busy'?['','SYNCHRO…','Échange en cours avec le serveur.']:SST=='ok'?(d?['y','EN ATTENTE','Des modifications partent dans quelques secondes.']:['g','SYNCHRO OK',m.at?'Dernière synchro : '+fdt(m.at)+'.':'']):SST=='offline'?['y','HORS LIGNE','Tes modifications partiront au retour du réseau.']:SST=='conflict'?['r','CONFLIT','Choisis la version à garder.']:SST=='login'?['r','RECONNEXION','Le serveur refuse ta session : déconnecte-toi puis reconnecte-toi.']:SST=='error'?['y','ERREUR','Le serveur ne répond pas. Si ça dure, le projet Supabase est peut-être en pause : relance-le sur supabase.com.']:['','EN ATTENTE',''];
+ const sum=o=>{const f=o.food||{},n=Object.keys(f).filter(k=>f[k].length).length;return `${n} jour${n>1?'s':''} de repas, ${(o.history||[]).length} séance${(o.history||[]).length>1?'s':''}, ${(o.weights||[]).length} pesée${(o.weights||[]).length>1?'s':''}`};
+ let prev=false;try{prev=!!localStorage.getItem('pcm1-prev')}catch(e){}
+ return h+`<span class="lamp ${st[0]}">${st[1]}</span><p><small>Connecté : ${esc(a.email||'')}. ${st[2]}</small></p>`+
+ (SST=='conflict'&&SC?`<div style="background:var(--soft);border-radius:14px;padding:12px;margin:8px 0"><b>Les deux versions ont changé depuis la dernière synchro.</b><p><small>Cet appareil (${DEV}) : ${sum(payload())}.<br>En ligne (envoyée depuis ${esc(SC.device||'?')}, ${fdt(Date.parse(SC.updated_at))}) : ${sum(SC.data)}.</small></p><p class="row"><button style="flex:1" data-a="keeplocal">Garder cet appareil</button><button style="flex:1" data-a="keepremote">Garder la version en ligne</button></p><small>L'autre version reste téléchargeable ici après ton choix.</small></div>`:'')+
+ `<p class="row"><button class="soft" style="flex:1" data-a="syncnow">Synchroniser</button><button class="soft" style="flex:1" data-a="logout">Se déconnecter</button></p>`+
+ (prev?'<button class="soft full" style="min-height:36px;font-size:13px" data-a="dlprev">Télécharger la version écartée au dernier conflit</button>':'')+msg}
+function syncAlert(){
+ const t=SST=='conflict'?'Tes données ont changé sur deux appareils : choisis laquelle garder.':!AU()&&SMETA().rev!=null?'Synchronisation arrêtée : reconnecte-toi.':'';
+ return t?`<div class="card row" style="gap:12px"><span class="lamp r" style="flex:none">SYNCHRO</span><small style="flex:1">${t}</small><button data-a="tab" data-t="data">Voir</button></div>`:''}
+(function(){ // retour d'un lien reçu par e-mail (confirmation d'inscription ou nouveau mot de passe)
+ const h=new URLSearchParams(location.hash.slice(1));if(!h.get('access_token')&&!h.get('error_description'))return;
+ if(h.get('type')=='recovery')RECOV=h.get('access_token');
+ else SM=h.get('access_token')?'E-mail confirmé. Connecte-toi maintenant depuis l\'appli (son icône sur l\'écran d\'accueil de l\'iPhone).':'Lien invalide ou expiré : '+h.get('error_description');
+ S.tab='data';history.replaceState(null,'',location.pathname+location.search)})();
 render();
+SYREADY=true;syncNow();
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)syncNow();else if(SYT)syncNow()});
+addEventListener('online',()=>syncNow());
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&dk()!=TD)render()});
 try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{})}catch(e){}
 </script></body></html>
