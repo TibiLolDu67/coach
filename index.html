@@ -136,6 +136,11 @@ button.big{min-height:56px;font-size:16px;font-weight:700;border-radius:18px;mar
 .hh+.li,.mh+.li,.list>.li:first-child{border-top:0}
 .li .lv{margin-top:2px}.li .lt{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex:none}
 .kc{white-space:nowrap}
+.grip{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;margin:-6px 2px -6px -10px;border-radius:12px;color:var(--mu);cursor:grab;flex:none;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.grip:active{cursor:grabbing;color:var(--acc)}.grip:focus-visible{outline:2px solid var(--acc2);outline-offset:0}
+.ex .exh{align-items:center}.dragmode{user-select:none;-webkit-user-select:none}
+.dragging{position:relative;z-index:20;border-color:var(--acc)!important;box-shadow:0 22px 44px -12px rgba(0,0,0,.85)!important;transition:none!important}
+.dropb{box-shadow:0 -3px 0 0 var(--acc)!important}.dropa{box-shadow:0 3px 0 0 var(--acc)!important}
 .tipx p{margin:8px 0 0;color:var(--mu);font-size:14px;line-height:1.55}details.li{margin:0}details.li summary{font-weight:650}
 .vrow{display:grid;grid-template-columns:92px 1fr 28px 34px;gap:10px;align-items:center;margin:10px 0}.vrow .bar{margin:0}.vrow span{font-size:14px;font-weight:600}.vd{text-align:right}
 .li.fe{display:block}.li.fe .row button{min-height:44px}
@@ -233,13 +238,13 @@ function vSeance(){
  }
  const d=S.program.find(x=>x.id==S.draft.day);if(!d){S.draft=null;return vSeance()}
  let h='',todo=0,tot=0;
- d.exos.forEach(e=>{
+ exOrder(d).forEach(e=>{
   let D=S.draft.x[e.id];
   if(!D){const p=prev(e);D=S.draft.x[e.id]={c:e.charge,cs:e.cs?e.cs.slice():null,r:(e.verdict=='keep'&&p)?p.r.slice():[],ok:[],pain:false,feel:0}}
   D.ok=D.ok||[];while(D.r.length<e.sets)D.r.push(e.min);D.r.length=e.sets;D.ok.length=e.sets;
   if(D.cs){while(D.cs.length<e.sets)D.cs.push(D.cs.length?D.cs[D.cs.length-1]:D.c);D.cs.length=e.sets}
   tot+=e.sets;for(let i=0;i<e.sets;i++)if(!D.ok[i])todo++;
-  h+=`<div class="card ex"><div class="exh"><b>${esc(e.name)}</b><small>${e.sets}×${e.min}-${e.max}${e.rest>0?', repos '+e.rest+' s':''}</small></div><div class="exv">${lamp(e)}</div>`+
+  h+=`<div class="card ex dragit" data-id="${e.id}"><div class="exh"><span class="grip" tabindex="0" role="button" aria-label="Déplacer ${esc(e.name)} dans la séance du jour (glisser, ou flèches haut et bas)" data-drag="ses" data-d="0">${GRIP}</span><b>${esc(e.name)}</b><small>${e.sets}×${e.min}-${e.max}${e.rest>0?', repos '+e.rest+' s':''}</small></div><div class="exv">${lamp(e)}</div>`+
   ((e.tip||fiche(e))?`<details><summary>Comment faire</summary><div class="tipx">${e.tip?`<p>${esc(e.tip)}</p>`:''}${fiche(e)&&fiche(e).t!==e.tip?`<p>${esc(fiche(e).t).replace(/\n/g,'<br>')}</p>`:''}</div></details>`:'')+
   (D.cs?'<small>Charge (kg) puis répétitions, série par série</small>':`<label><small>Charge (kg)</small><input type="number" step="any" inputmode="decimal" data-k="c" data-x="${e.id}" value="${D.c}"></label>`)+
   D.r.map((v,i)=>`<div class="set${D.ok[i]?' ok':''}"><b>S${i+1}</b>${D.cs?`<input class="kg" type="number" step="any" inputmode="decimal" aria-label="Charge de la série ${i+1} en kg" data-k="cs" data-x="${e.id}" data-i="${i}" value="${D.cs[i]}">`:''}<button data-a="dec" data-x="${e.id}" data-i="${i}">−</button><input type="number" inputmode="numeric" data-k="r" data-x="${e.id}" data-i="${i}" value="${v}"><button data-a="inc" data-x="${e.id}" data-i="${i}">+</button><input type="checkbox" aria-label="Série ${i+1} faite" data-k="ok" data-x="${e.id}" data-i="${i}" ${D.ok[i]?'checked':''}></div>`).join('')+
@@ -254,7 +259,7 @@ function vSeance(){
 function vProg(){
  const F=[['sets','Séries'],['min','Rép min'],['max','Rép max'],['charge','Charge'],['step','Palier'],['rest','Repos (s)']];
  return cycCard()+S.program.map((d,i)=>`<div class="card"><div class="row" style="align-items:flex-end"><label style="flex:1;min-width:0"><small>Nom de la séance</small><input class="tin" data-k="dn" placeholder="Ex. Haut du corps" data-d="${i}" value="${esc(d.name)}"></label><button class="danger ico-b" data-a="delday" data-d="${i}" aria-label="Supprimer la séance">✕</button></div>`+
-  d.exos.map((e,j)=>`<div class="blk"><input class="tin2" data-k="ef" data-f="name" data-d="${i}" data-e="${j}" value="${esc(e.name)}" aria-label="Nom de l'exercice"><div class="grid">${F.map(f=>`<label><small>${f[1]}</small><input type="number" step="any" inputmode="decimal" data-k="ef" data-f="${f[0]}" data-d="${i}" data-e="${j}" value="${e[f[0]]}"></label>`).join('')}</div><label><small>Groupe musculaire</small><select data-k="ef" data-f="grp" data-d="${i}" data-e="${j}"><option value="">Auto : ${guessG(e.name)}</option>${GRP.map(g=>`<option ${e.grp==g?'selected':''}>${g}</option>`).join('')}</select></label>${S.sheets.length?`<label style="display:block;margin-top:8px"><small>Fiche d'exercice</small><select data-k="ef" data-f="sheet" data-d="${i}" data-e="${j}"><option value="">Auto : ${(S.sheets.find(s=>norm(s.n)==norm(e.name))||{n:'aucune fiche à ce nom'}).n}</option>${S.sheets.map(s=>`<option ${e.sheet==s.n?'selected':''}>${esc(s.n)}</option>`).join('')}</select></label>`:''}<textarea style="margin-top:8px" rows="2" data-k="ef" data-f="tip" data-d="${i}" data-e="${j}" placeholder="Consignes d'exécution">${esc(e.tip)}</textarea><button class="soft sm" style="margin-top:8px" data-a="delexo" data-d="${i}" data-e="${j}">Supprimer l'exercice</button></div>`).join('')+
+  d.exos.map((e,j)=>`<div class="blk dragit" data-id="${e.id}"><div class="row"><span class="grip" tabindex="0" role="button" aria-label="Déplacer ${esc(e.name)} (glisser, ou flèches haut et bas)" data-drag="prog" data-d="${i}">${GRIP}</span><input class="tin2" data-k="ef" data-f="name" data-d="${i}" data-e="${j}" value="${esc(e.name)}" aria-label="Nom de l'exercice"></div><div class="grid">${F.map(f=>`<label><small>${f[1]}</small><input type="number" step="any" inputmode="decimal" data-k="ef" data-f="${f[0]}" data-d="${i}" data-e="${j}" value="${e[f[0]]}"></label>`).join('')}</div><label><small>Groupe musculaire</small><select data-k="ef" data-f="grp" data-d="${i}" data-e="${j}"><option value="">Auto : ${guessG(e.name)}</option>${GRP.map(g=>`<option ${e.grp==g?'selected':''}>${g}</option>`).join('')}</select></label>${S.sheets.length?`<label style="display:block;margin-top:8px"><small>Fiche d'exercice</small><select data-k="ef" data-f="sheet" data-d="${i}" data-e="${j}"><option value="">Auto : ${(S.sheets.find(s=>norm(s.n)==norm(e.name))||{n:'aucune fiche à ce nom'}).n}</option>${S.sheets.map(s=>`<option ${e.sheet==s.n?'selected':''}>${esc(s.n)}</option>`).join('')}</select></label>`:''}<textarea style="margin-top:8px" rows="2" data-k="ef" data-f="tip" data-d="${i}" data-e="${j}" placeholder="Consignes d'exécution">${esc(e.tip)}</textarea><button class="soft sm" style="margin-top:8px" data-a="delexo" data-d="${i}" data-e="${j}">Supprimer l'exercice</button></div>`).join('')+
   `<button class="soft full" style="margin-top:12px" data-a="addexo" data-d="${i}">+ Exercice</button></div>`).join('')+'<button class="full big" data-a="addday">+ Nouvelle séance</button>'+(S.sheets.length?`<h2 class="sec">Fiches d'exercices</h2><div class="card list">${S.sheets.slice().sort((a,b)=>a.n.localeCompare(b.n,'fr')).map(s=>`<details class="li fe"><summary>${esc(s.n)}</summary><p style="margin:8px 0 0"><small>${esc(s.t).replace(/\n/g,'<br>')}</small></p></details>`).join('')}</div>`:'');
 }
 function vHist(){
@@ -456,7 +461,7 @@ function render(){
 }
 function finish(){
  const d=S.program.find(x=>x.id==S.draft.day),en={t:Date.now(),day:d.name,note:S.draft.note||'',exos:[]};
- d.exos.forEach(e=>{
+ exOrder(d).forEach(e=>{
   const D=S.draft.x[e.id];if(!D)return;
   const p=prev(e),cs=D.cs,b=cs?Math.max(...cs):D.c,rd=x=>Math.max(0,Math.round(x*100)/100);let v='keep',w='dans la fourchette',dl=0;
   if(D.pain){v='down';w='douleur signalée';dl=-e.step}
@@ -550,6 +555,31 @@ document.addEventListener('change',ev=>{
  else if(k=='ef'){const e=S.program[+t.dataset.d].exos[+t.dataset.e],f=t.dataset.f;if(f=='charge'&&e.cs)e.cs=e.cs.map(c=>Math.max(0,c+n-e.charge));e[f]=(f=='name'||f=='tip'||f=='grp'||f=='sheet')?t.value:n;if(f=='name')render()}
  save();
 });
+// Déplacement des exercices par poignée : Programme (ordre enregistré) et séance en cours (ordre du jour seulement, dans S.draft.order)
+const GRIP='<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><circle cx="9" cy="6" r="1.7"/><circle cx="15" cy="6" r="1.7"/><circle cx="9" cy="12" r="1.7"/><circle cx="15" cy="12" r="1.7"/><circle cx="9" cy="18" r="1.7"/><circle cx="15" cy="18" r="1.7"/></svg>';
+function exOrder(d){const o=S.draft&&S.draft.day==d.id&&S.draft.order;if(!o)return d.exos.slice();const by={};d.exos.forEach(e=>{by[e.id]=e});
+ const r=o.map(id=>by[id]).filter(Boolean);d.exos.forEach(e=>{if(!r.includes(e))r.push(e)});return r}
+function moveEx(kind,d,from,to){
+ if(from===to||to<0)return false;
+ if(kind=='prog'){const a=S.program[d].exos;if(to>=a.length)return false;a.splice(to,0,a.splice(from,1)[0])}
+ else{const day=S.program.find(x=>x.id==S.draft.day),o=exOrder(day).map(e=>e.id);if(to>=o.length)return false;o.splice(to,0,o.splice(from,1)[0]);S.draft.order=o}
+ save();render();return true}
+let DG=null;
+function dragPos(){const it=DG.it,others=DG.list.filter(x=>x!==it);it.style.transform=`translateY(${DG.y+scrollY-DG.y0}px)`;let to=0;
+ others.forEach((x,i)=>{const r=x.getBoundingClientRect();if(DG.y>r.top+r.height/2)to=i+1});DG.to=to;
+ DG.list.forEach(x=>x.classList.remove('dropb','dropa'));if(others.length){if(to<others.length)others[to].classList.add('dropb');else others[others.length-1].classList.add('dropa')}}
+function dragTick(){if(!DG)return;if(DG.y<90)scrollBy(0,-10);else if(DG.y>innerHeight-150)scrollBy(0,10);dragPos()}
+document.addEventListener('pointerdown',ev=>{const g=ev.target.closest&&ev.target.closest('.grip');if(!g||DG)return;ev.preventDefault();
+ const it=g.closest('.dragit'),list=[...it.parentElement.querySelectorAll(':scope>.dragit')];
+ DG={it,list,from:list.indexOf(it),to:list.indexOf(it),y0:ev.clientY+scrollY,y:ev.clientY,kind:g.dataset.drag,d:+g.dataset.d,tm:setInterval(dragTick,16)};
+ try{g.setPointerCapture(ev.pointerId)}catch(e){}it.classList.add('dragging');document.body.classList.add('dragmode')});
+document.addEventListener('pointermove',ev=>{if(DG){DG.y=ev.clientY;dragPos()}});
+function dragEnd(){if(!DG)return;const o=DG;DG=null;clearInterval(o.tm);o.it.style.transform='';o.it.classList.remove('dragging');document.body.classList.remove('dragmode');
+ o.list.forEach(x=>x.classList.remove('dropb','dropa'));moveEx(o.kind,o.d,o.from,o.to)}
+document.addEventListener('pointerup',dragEnd);document.addEventListener('pointercancel',dragEnd);
+document.addEventListener('keydown',ev=>{const g=ev.target.closest&&ev.target.closest('.grip');if(!g||(ev.key!='ArrowUp'&&ev.key!='ArrowDown'))return;ev.preventDefault();
+ const it=g.closest('.dragit'),list=[...it.parentElement.querySelectorAll(':scope>.dragit')],i=list.indexOf(it),id=it.dataset.id;
+ if(moveEx(g.dataset.drag,+g.dataset.d,i,i+(ev.key=='ArrowUp'?-1:1))){const n=document.querySelector(`.dragit[data-id="${id}"] .grip`);if(n)n.focus()}});
 document.addEventListener('input',ev=>{const t=ev.target;if(t.id=='fn')$('#sug').innerHTML=sugHtml(t.value);else if(t.id=='lq'){LQ=t.value;$('#lib').innerHTML=libHtml()}});
 ['pointerdown','pointermove'].forEach(n=>document.addEventListener(n,ev=>{
  const g=ev.target.closest&&ev.target.closest('#nhs');if(!g)return;
