@@ -32,6 +32,7 @@ Usage principal : iPhone (installée sur l'écran d'accueil), plus un PC. Toute 
 ## Règles métier
 - Progression (double progression) : toutes les séries au max de la fourchette = AUGMENTER (+palier) ; sous le min deux séances de suite = RÉGRESSER (−palier) ; sinon MAINTENIR. Douleur articulaire = RÉGRESSER (à revoir, voir point 13).
 - Corps : BMR Mifflin-St Jeor ; TDEE = BMR × activité + séances × 300 / 7 ; protéines 2 g/kg, lipides 0,9 g/kg, glucides = le reste ; cible jamais sous le BMR.
+- Cibles manuelles (24/10/2026) : champs `mk`, `mP`, `mG`, `mL` du profil (carte « Cibles manuelles » dans Corps). Une case vide garde le calcul automatique ; sans glucides fixés, ils prennent le reste des calories. Pas de plancher BMR en manuel, seulement un avertissement. Si les calories sont fixées à la main, « Appliquer ±150 kcal » modifie `mk` (et `mG` de ±150/4 s'il est fixé) au lieu de `S.adj`.
 - Pesée **une fois par semaine** (tendance lissée sur 14 jours, analyse après 3 pesées). Le coach propose ±150 kcal si l'écart à l'objectif dépasse 0,2 kg/sem.
 - Nutrition : saisie des macros **pour 100 g puis un coefficient de portion** (comme son Excel : 200 g mangés = coefficient 2). Garder ce fonctionnement.
 - Le coach s'appelle « Coach ». Thème clair (défaut) ou sombre au choix dans Profil > Options.
