@@ -476,8 +476,10 @@ function finish(){
  });
  S.history.push(en);S.draft=null;S.tab='hist';
 }
+// Sur iPhone, toucher un bouton ne valide pas le champ en cours de saisie (pas d'événement change) : on le valide avant toute action, sinon le nouveau rendu effacerait la saisie
+function flushField(except){const a=document.activeElement;if(a&&a!==except&&a.dataset&&a.dataset.k&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)&&a.type!='checkbox'&&a.type!='file')a.dispatchEvent(new Event('change',{bubbles:true}))}
 document.addEventListener('click',ev=>{
- const b=ev.target.closest('[data-a]');if(!b)return;
+ const b=ev.target.closest('[data-a]');if(!b)return;flushField(b);
  const a=b.dataset.a,x=b.dataset.x,i=+b.dataset.i,d=+b.dataset.d,j=+b.dataset.e,D=S.draft&&S.draft.x[x];
  if(a=='login'||a=='signup'){const e=$('#sye').value.trim(),p=$('#syp').value;SE=e;if(!e||!p){SM='Indique ton e-mail et un mot de passe.';upd()}else authReq(a,e,p);return}
  if(a=='reset'){const e=$('#sye').value.trim();SE=e;if(!e){SM='Indique d\'abord ton e-mail.';upd()}else recover(e);return}
@@ -533,7 +535,7 @@ document.addEventListener('click',ev=>{
  save();render();
 });
 document.addEventListener('change',ev=>{
- const t=ev.target,k=t.dataset.k;if(!k)return;
+ const t=ev.target,k=t.dataset.k;if(!k)return;flushField(t);
  if(k=='imf'){const f=t.files[0];if(f){const r=new FileReader();r.onload=()=>{DM=importData(r.result)||'Fichier invalide : choisis une sauvegarde ou un fichier d\'ajout pour Coach.';save();render()};r.readAsText(f)}return}
  const D=S.draft&&S.draft.x[t.dataset.x],n=parseFloat(t.value)||0;
  if(k=='c')D.c=n;else if(k=='r')D.r[+t.dataset.i]=Math.max(0,Math.round(n));
